@@ -21,6 +21,7 @@ const aiKeyPool = document.getElementById("aiKeyPool");
 const aiDeepSeekKey = document.getElementById("aiDeepSeekKey");
 const aiHiddenModel = document.getElementById("aiHiddenModel");
 const chatHistory = document.getElementById("chatHistory");
+const promptChips = [...document.querySelectorAll(".prompt-chip")];
 
 const localBaseUrl = new URL(".", window.location.href);
 const localHealthUrl = new URL("api/health", localBaseUrl);
@@ -41,6 +42,29 @@ const CHAT_HISTORY_STORAGE = "itp4203_hidden_chat_history_v1";
 const MAX_TEXT_CHARS = 120000;
 const MAX_FILE_BYTES = 18 * 1024 * 1024;
 const MAX_CHAT_MESSAGES = 40;
+
+const PROMPT_TEMPLATES = {
+  line_by_line:
+    "請你用小學生都明嘅方法解釋下面內容。先講整體用途，再逐行解釋每一行做咩，最後講跑完會有咩效果：\n\n[貼上唔明嘅 code / 題目 / 內容]",
+  button_meaning:
+    "我唔明呢個元件 / button / 控件係做咩。請你先講佢用途，再講按咗會發生咩事，再講喺 Android 要喺邊個檔案處理：\n\n[貼上元件名 / code / 題目]",
+  fix_error:
+    "幫我睇下面錯誤。請直接指出錯喺邊，然後俾我最短可抄答案，最後再用最簡單方法解釋點解：\n\n[貼上 error message / 截圖文字 / code]",
+  room_answer:
+    "請根據我下面貼嘅要求，直接俾我最短版 Room 答案。要包括 Entity、Dao、Database，同埋簡單解釋每個檔案做咩：\n\n[貼上題目 / 要求]",
+  recycler_answer:
+    "請根據我下面貼嘅要求，直接俾我最短版 RecyclerView 答案。要包括 Adapter、ViewHolder、item layout，同埋點樣喺 Activity set adapter：\n\n[貼上題目 / 要求]",
+  intent_answer:
+    "請幫我寫最短版 Intent 跳頁答案。要講清楚邊個頁面 send、邊個頁面 receive、putExtra / getStringExtra 點用：\n\n[貼上題目 / 要求]",
+  image_picker:
+    "請幫我寫最短版 Select Image / image picker 答案。要包括點開相簿、點顯示預覽、點存 URI：\n\n[貼上題目 / 要求]",
+  xml_layout:
+    "請幫我根據下面要求寫最簡單 XML 版面。請直接俾我可以抄嘅 layout code，再解釋每個元件做咩：\n\n[貼上畫面要求 / mock test 文字]",
+  which_file:
+    "我而家唔知應該改邊個檔案。請你睇我下面貼嘅要求 / code，直接講應該改咩檔案、每個檔案負責乜：\n\n[貼上題目 / code / error]",
+  turn_requirement_into_code:
+    "請你將下面題目直接拆成可抄答案。先列要整嘅檔案，再俾最短 code，最後講每部分對應題目邊句要求：\n\n[貼上題目全文]",
+};
 
 const BOT_AVATAR = `
   <svg viewBox="0 0 24 24" class="chat-icon">
@@ -400,6 +424,16 @@ function clearComposer() {
   }
 
   renderSelectedFiles();
+}
+
+function insertTemplate(template) {
+  if (!aiQuestion) return;
+
+  const current = aiQuestion.value.trim();
+  aiQuestion.value = current ? `${current}\n\n${template}` : template;
+  autoGrowTextarea();
+  aiQuestion.focus();
+  aiQuestion.setSelectionRange(aiQuestion.value.length, aiQuestion.value.length);
 }
 
 function renderSelectedFiles() {
@@ -949,6 +983,16 @@ if (aiProvider) {
     applyProviderDefaults(aiProvider.value === "deepseek" ? "deepseek" : "gemini");
   });
 }
+
+promptChips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    const key = chip.dataset.templateKey || "";
+    const template = PROMPT_TEMPLATES[key];
+    if (template) {
+      insertTemplate(template);
+    }
+  });
+});
 
 if (askAiButton) {
   askAiButton.addEventListener("click", () => {

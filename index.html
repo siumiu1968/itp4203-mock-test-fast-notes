@@ -429,6 +429,25 @@ btnBack.setOnClickListener {
         <div id="chatHistory" class="chat-history" aria-live="polite"></div>
 
         <div class="composer-wrap">
+          <div class="template-panel">
+            <div class="template-head">
+              <strong>常用提示詞</strong>
+              <span>一按即填，之後你再加返唔明嘅部分</span>
+            </div>
+            <div class="template-grid">
+              <button class="prompt-chip" type="button" data-template-key="line_by_line">逐行解釋</button>
+              <button class="prompt-chip" type="button" data-template-key="button_meaning">唔明粒掣</button>
+              <button class="prompt-chip" type="button" data-template-key="fix_error">幫我改錯</button>
+              <button class="prompt-chip" type="button" data-template-key="room_answer">Room 最短答案</button>
+              <button class="prompt-chip" type="button" data-template-key="recycler_answer">RecyclerView 最短答案</button>
+              <button class="prompt-chip" type="button" data-template-key="intent_answer">Intent 跳頁</button>
+              <button class="prompt-chip" type="button" data-template-key="image_picker">Select Image</button>
+              <button class="prompt-chip" type="button" data-template-key="xml_layout">XML 版面</button>
+              <button class="prompt-chip" type="button" data-template-key="which_file">應該改邊個檔案</button>
+              <button class="prompt-chip" type="button" data-template-key="turn_requirement_into_code">題目變 code</button>
+            </div>
+          </div>
+
           <div id="aiFileList" class="upload-list"></div>
           <div class="chat-composer">
             <label for="aiFileInput" class="icon-button attach-button" aria-label="Upload files">
