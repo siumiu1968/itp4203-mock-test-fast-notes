@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
 </head>
 <body>
   <div class="bg-orb orb-a"></div>
@@ -45,7 +46,6 @@
       <a href="#official-links">官方網站</a>
       <a href="#copy-zone">Copy Zone</a>
       <a href="#local-files">遠端答案下載</a>
-      <a href="#ai-panel">AI 問答</a>
     </nav>
 
     <section class="content">
@@ -399,37 +399,54 @@ btnBack.setOnClickListener {
         </div>
       </section>
 
-      <section id="ai-panel" class="panel">
-        <div class="panel-head">
-          <h2>AI 問答面板</h2>
-          <p>
-            公開版最快方法係直接喺瀏覽器貼你自己嘅 Google AI Studio key。
-            如果你唔貼 key，網站就會退回去試本地 proxy。
-          </p>
-        </div>
-
-        <div class="ai-shell">
-          <label for="aiApiKey">Google AI API Key</label>
-          <input id="aiApiKey" type="password" placeholder="可留空；公開版建議貼你自己嘅 key，會只存喺呢個瀏覽器" />
-          <label for="aiModel">模型代號</label>
-          <input id="aiModel" type="text" value="gemma-4-26b-a4b-it" placeholder="例如：gemma-4-26b-a4b-it，或者你自己可用嘅 31B model id" />
-          <label for="aiQuestion">輸入問題</label>
-          <textarea id="aiQuestion" rows="6" placeholder="例：幫我寫最短版 InsertActivity Save 邏輯，只要 Room insert + finish()"></textarea>
-          <p class="helper-text">
-            冇 key 都可以先用下面官方入口：
-            <a href="https://aistudio.google.com/" target="_blank" rel="noreferrer">Google AI Studio</a>
-            /
-            <a href="https://gemini.google.com/" target="_blank" rel="noreferrer">Gemini</a>
-          </p>
-          <div class="ai-actions">
-            <button id="askAiButton" class="button button-primary" type="button">問 AI</button>
-            <span id="aiStatus" class="status-pill">未連接</span>
-          </div>
-          <pre id="aiAnswer" class="ai-answer">公開版用法：貼你自己 Google AI key，就可以直接喺網站問。冇 key 就只會試本地 proxy。</pre>
-        </div>
-      </section>
     </section>
   </main>
+
+  <button id="hiddenAiTrigger" class="hidden-ai-trigger" type="button" aria-label="Open helper"></button>
+
+  <section id="aiModal" class="ai-modal" hidden aria-hidden="true">
+    <div class="ai-modal-card">
+      <div class="ai-modal-head">
+        <button id="closeAiModal" class="close-ai-button" type="button" aria-label="Close"></button>
+      </div>
+
+      <div class="ai-shell">
+        <label for="aiQuestion">輸入問題</label>
+        <textarea id="aiQuestion" rows="6" placeholder="例如：幫我用最短方法寫 InsertActivity save，同埋解釋每一步做乜。"></textarea>
+
+        <label for="aiFileInput">上傳資料 / 檔案</label>
+        <input id="aiFileInput" type="file" multiple />
+        <div id="aiFileList" class="upload-list"></div>
+
+        <div class="ai-actions">
+          <button id="askAiButton" class="blank-send-button" type="button" aria-label="Send"></button>
+          <span id="aiStatus" class="status-pill">未準備</span>
+        </div>
+
+        <pre id="aiAnswer" class="ai-answer">輸入問題，必要時加埋文件，再按空白鍵送出。</pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="aiConfigModal" class="ai-config-modal" hidden aria-hidden="true">
+    <div class="ai-config-card">
+      <div class="panel-head">
+        <h2>Helper Config</h2>
+        <p>呢層唔會喺主畫面顯示。你可以喺呢度貼 key pool，同埋改 hidden model。</p>
+      </div>
+
+      <label for="aiKeyPool">Gemini Key Pool</label>
+      <textarea id="aiKeyPool" rows="8" placeholder="一行一條 key。quota 用完會自動試下一條。"></textarea>
+
+      <label for="aiHiddenModel">Hidden Model</label>
+      <input id="aiHiddenModel" type="text" value="gemini-2.5-flash" placeholder="例如：gemini-2.5-flash" />
+
+      <div class="ai-actions">
+        <button id="saveAiConfig" class="button button-primary" type="button">Save</button>
+        <button id="closeAiConfig" class="button button-secondary" type="button">Close</button>
+      </div>
+    </div>
+  </section>
 
   <footer class="footer">
     <p>最快用法：先開官方網站卡片，再去 Copy Zone 攞最短答案，再按需要改字眼。</p>

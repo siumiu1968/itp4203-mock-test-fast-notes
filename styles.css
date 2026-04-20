@@ -33,6 +33,10 @@ body {
   line-height: 1.55;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .bg-orb {
   position: fixed;
   width: 22rem;
@@ -273,6 +277,16 @@ textarea {
   font: inherit;
 }
 
+input[type="file"] {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  border: 1px dashed rgba(31, 36, 48, 0.16);
+  background: #fffdfa;
+  color: var(--muted);
+  font: inherit;
+}
+
 .card-top {
   display: flex;
   flex-wrap: wrap;
@@ -374,6 +388,96 @@ pre {
   color: #9a4318;
 }
 
+.hidden-ai-trigger {
+  position: fixed;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+  opacity: 0.04;
+  z-index: 40;
+  cursor: pointer;
+}
+
+.hidden-ai-trigger:hover {
+  opacity: 0.1;
+}
+
+.ai-modal,
+.ai-config-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(18, 23, 31, 0.44);
+  backdrop-filter: blur(14px);
+}
+
+.ai-modal-card,
+.ai-config-card {
+  width: min(760px, 100%);
+  background: linear-gradient(160deg, rgba(255, 252, 246, 0.98), rgba(247, 241, 233, 0.96));
+  border: 1px solid rgba(31, 36, 48, 0.08);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+
+.ai-modal-head {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.close-ai-button {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(31, 36, 48, 0.08);
+  cursor: pointer;
+}
+
+.close-ai-button:hover {
+  background: rgba(31, 36, 48, 0.14);
+}
+
+.blank-send-button {
+  width: 64px;
+  height: 44px;
+  border: 1px solid rgba(31, 36, 48, 0.12);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.18), rgba(15, 118, 110, 0.32));
+  cursor: pointer;
+}
+
+.blank-send-button:hover {
+  transform: translateY(-1px);
+}
+
+.upload-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.upload-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.08);
+  color: #0b635d;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
 .ai-answer {
   min-height: 180px;
   white-space: pre-wrap;
@@ -409,7 +513,7 @@ pre {
 
   .side-nav {
     position: static;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .mapping-grid,
@@ -436,5 +540,11 @@ pre {
 
   h1 {
     font-size: 2.45rem;
+  }
+
+  .ai-modal-card,
+  .ai-config-card {
+    padding: 0.85rem;
+    border-radius: 22px;
   }
 }
