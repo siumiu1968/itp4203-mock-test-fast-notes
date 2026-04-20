@@ -453,14 +453,26 @@ btnBack.setOnClickListener {
     <div class="ai-config-card">
       <div class="panel-head">
         <h2>Helper Config</h2>
-        <p>呢層唔會喺主畫面顯示。你可以喺呢度貼 key pool，同埋改 hidden model。Mac 可用 `Command + Option + K`，或者右擊右下透明點。</p>
+        <p>呢層唔會喺主畫面顯示。你可以喺呢度切 provider、改 base URL、model，同埋放 API key。Mac 可用 `Command + Option + K`，或者右擊右下透明點。</p>
       </div>
+
+      <label for="aiProvider">Provider</label>
+      <select id="aiProvider">
+        <option value="gemini">Gemini</option>
+        <option value="deepseek">DeepSeek</option>
+      </select>
+
+      <label for="aiBaseUrl">Base URL</label>
+      <input id="aiBaseUrl" type="text" value="" placeholder="例如：https://api.deepseek.com" />
 
       <label for="aiKeyPool">Gemini Key Pool</label>
       <textarea id="aiKeyPool" rows="8" placeholder="一行一條 key。quota 用完會自動試下一條。"></textarea>
 
+      <label for="aiDeepSeekKey">DeepSeek API Key</label>
+      <input id="aiDeepSeekKey" type="password" value="" placeholder="例如：sk-..." />
+
       <label for="aiHiddenModel">Hidden Model</label>
-      <input id="aiHiddenModel" type="text" value="gemini-2.5-flash" placeholder="例如：gemini-2.5-flash" />
+      <input id="aiHiddenModel" type="text" value="gemini-2.5-flash" placeholder="例如：gemini-2.5-flash / deepseek-reasoner" />
 
       <div class="ai-actions">
         <button id="saveAiConfig" class="button button-primary" type="button">Save</button>

@@ -15,7 +15,10 @@ const aiStatus = document.getElementById("aiStatus");
 const aiQuestion = document.getElementById("aiQuestion");
 const aiFileInput = document.getElementById("aiFileInput");
 const aiFileList = document.getElementById("aiFileList");
+const aiProvider = document.getElementById("aiProvider");
+const aiBaseUrl = document.getElementById("aiBaseUrl");
 const aiKeyPool = document.getElementById("aiKeyPool");
+const aiDeepSeekKey = document.getElementById("aiDeepSeekKey");
 const aiHiddenModel = document.getElementById("aiHiddenModel");
 const chatHistory = document.getElementById("chatHistory");
 
@@ -24,8 +27,14 @@ const localHealthUrl = new URL("api/health", localBaseUrl);
 const localAskUrl = new URL("api/ask", localBaseUrl);
 const netlifyAskUrl = new URL("/.netlify/functions/ask", window.location.origin);
 
+const DEFAULT_PROVIDER = "gemini";
 const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
+const DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com";
 const AI_KEY_POOL_STORAGE = "itp4203_gemini_key_pool";
+const AI_PROVIDER_STORAGE = "itp4203_hidden_provider";
+const AI_BASE_URL_STORAGE = "itp4203_hidden_base_url";
+const AI_DEEPSEEK_KEY_STORAGE = "itp4203_hidden_deepseek_key";
 const AI_MODEL_STORAGE = "itp4203_hidden_model";
 const AI_ACTIVE_KEY_INDEX_STORAGE = "itp4203_active_key_index";
 const CHAT_HISTORY_STORAGE = "itp4203_hidden_chat_history_v1";
@@ -109,6 +118,23 @@ function getStoredKeyPool() {
   return parseKeyPool(window.localStorage.getItem(AI_KEY_POOL_STORAGE) || "");
 }
 
+function getStoredProvider() {
+  const provider = (window.localStorage.getItem(AI_PROVIDER_STORAGE) || DEFAULT_PROVIDER).trim().toLowerCase();
+  return provider === "deepseek" ? "deepseek" : "gemini";
+}
+
+function getDefaultBaseUrl(provider) {
+  return provider === "deepseek" ? DEFAULT_DEEPSEEK_BASE_URL : DEFAULT_GEMINI_BASE_URL;
+}
+
+function getStoredBaseUrl(provider = getStoredProvider()) {
+  return (window.localStorage.getItem(AI_BASE_URL_STORAGE) || getDefaultBaseUrl(provider)).trim() || getDefaultBaseUrl(provider);
+}
+
+function getStoredDeepSeekKey() {
+  return (window.localStorage.getItem(AI_DEEPSEEK_KEY_STORAGE) || "").trim();
+}
+
 function getStoredModel() {
   return (window.localStorage.getItem(AI_MODEL_STORAGE) || DEFAULT_MODEL).trim() || DEFAULT_MODEL;
 }
@@ -122,12 +148,30 @@ function getActiveKeyIndex(poolLength) {
 }
 
 function saveConfig() {
+  const selectedProvider = aiProvider?.value === "deepseek" ? "deepseek" : "gemini";
+
+  window.localStorage.setItem(AI_PROVIDER_STORAGE, selectedProvider);
+
+  if (aiBaseUrl) {
+    const value = aiBaseUrl.value.trim() || getDefaultBaseUrl(selectedProvider);
+    window.localStorage.setItem(AI_BASE_URL_STORAGE, value);
+  }
+
   if (aiKeyPool) {
     const value = aiKeyPool.value.trim();
     if (value) {
       window.localStorage.setItem(AI_KEY_POOL_STORAGE, value);
     } else {
       window.localStorage.removeItem(AI_KEY_POOL_STORAGE);
+    }
+  }
+
+  if (aiDeepSeekKey) {
+    const value = aiDeepSeekKey.value.trim();
+    if (value) {
+      window.localStorage.setItem(AI_DEEPSEEK_KEY_STORAGE, value);
+    } else {
+      window.localStorage.removeItem(AI_DEEPSEEK_KEY_STORAGE);
     }
   }
 
@@ -141,8 +185,22 @@ function saveConfig() {
 }
 
 function loadConfig() {
+  const provider = getStoredProvider();
+
+  if (aiProvider) {
+    aiProvider.value = provider;
+  }
+
+  if (aiBaseUrl) {
+    aiBaseUrl.value = getStoredBaseUrl(provider);
+  }
+
   if (aiKeyPool) {
     aiKeyPool.value = window.localStorage.getItem(AI_KEY_POOL_STORAGE) || "";
+  }
+
+  if (aiDeepSeekKey) {
+    aiDeepSeekKey.value = getStoredDeepSeekKey();
   }
 
   if (aiHiddenModel) {
@@ -152,6 +210,22 @@ function loadConfig() {
 
 function shouldRotateKey(message) {
   return /429|quota|resource[_ ]?exhausted|rate|exceed|limit|too many|unavailable/i.test(message);
+}
+
+function applyProviderDefaults(provider) {
+  if (aiBaseUrl) {
+    const current = aiBaseUrl.value.trim();
+    if (!current || current === DEFAULT_GEMINI_BASE_URL || current === DEFAULT_DEEPSEEK_BASE_URL) {
+      aiBaseUrl.value = getDefaultBaseUrl(provider);
+    }
+  }
+
+  if (aiHiddenModel) {
+    const currentModel = aiHiddenModel.value.trim();
+    if (!currentModel || currentModel === "gemini-2.5-flash" || currentModel === "deepseek-reasoner") {
+      aiHiddenModel.value = provider === "deepseek" ? "deepseek-reasoner" : "gemini-2.5-flash";
+    }
+  }
 }
 
 function escapeHtml(value) {
@@ -445,7 +519,7 @@ function trimText(text) {
   return `${text.slice(0, MAX_TEXT_CHARS)}\n\n[內容過長，已截短]`;
 }
 
-async function buildFileParts(files) {
+async function buildFileParts(files, provider) {
   const parts = [];
 
   for (const file of files) {
@@ -458,7 +532,7 @@ async function buildFileParts(files) {
 
     const ext = normalizeExtension(file.name);
 
-    if (isInlineMedia(file, ext)) {
+    if (provider === "gemini" && isInlineMedia(file, ext)) {
       const buffer = await file.arrayBuffer();
       const mimeType = file.type || (ext === "pdf" ? "application/pdf" : "image/png");
       parts.push({ text: `Attached file: ${file.name}` });
@@ -467,6 +541,13 @@ async function buildFileParts(files) {
           mimeType,
           data: arrayBufferToBase64(buffer),
         },
+      });
+      continue;
+    }
+
+    if (provider === "deepseek" && isInlineMedia(file, ext)) {
+      parts.push({
+        text: `Attached file ${file.name}: binary attachment detected. In DeepSeek mode, please ask based on filename/description or upload text-based notes instead.`,
       });
       continue;
     }
@@ -554,6 +635,62 @@ async function askGoogleDirect(question, context, model, apiKey, fileParts) {
   return answer;
 }
 
+function buildDeepSeekMessages(question, context, fileParts) {
+  const joinedFileText = fileParts
+    .map((part) => (part && typeof part.text === "string" ? part.text : ""))
+    .filter(Boolean)
+    .join("\n\n");
+
+  const userContent = [
+    joinedFileText,
+    `Question:\n${question}`,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  return [
+    {
+      role: "system",
+      content:
+        "You are a concise Android Kotlin exam helper. " +
+        "Answer in Traditional Chinese or simple English when code is clearer. " +
+        "Prefer short, paste-ready code when appropriate.\n\n" +
+        `Context:\n${context}`,
+    },
+    {
+      role: "user",
+      content: userContent,
+    },
+  ];
+}
+
+async function askDeepSeekDirect(question, context, model, apiKey, baseUrl, fileParts) {
+  const response = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: model || "deepseek-reasoner",
+      stream: false,
+      messages: buildDeepSeekMessages(question, context, fileParts),
+    }),
+  });
+
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload.error?.message || `DeepSeek request failed (${response.status})`);
+  }
+
+  const answer = payload.choices?.[0]?.message?.content?.trim() || "";
+  if (!answer) {
+    throw new Error("DeepSeek 沒有回覆內容");
+  }
+
+  return answer;
+}
+
 async function askWithKeyPool(question, context, fileParts) {
   const keyPool = getStoredKeyPool();
   if (!keyPool.length) {
@@ -584,12 +721,15 @@ async function askWithKeyPool(question, context, fileParts) {
 }
 
 async function askLocalProxy(question, context, fileParts) {
+  const provider = getStoredProvider();
   const response = await fetch(localAskUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      provider,
+      base_url: getStoredBaseUrl(provider),
       model: getStoredModel(),
       question,
       context,
@@ -606,12 +746,15 @@ async function askLocalProxy(question, context, fileParts) {
 }
 
 async function askNetlifyFunction(question, context, fileParts) {
+  const provider = getStoredProvider();
   const response = await fetch(netlifyAskUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      provider,
+      base_url: getStoredBaseUrl(provider),
       model: getStoredModel(),
       question,
       context,
@@ -628,7 +771,14 @@ async function askNetlifyFunction(question, context, fileParts) {
 }
 
 async function pingAi() {
-  if (getStoredKeyPool().length) {
+  const provider = getStoredProvider();
+
+  if (provider === "gemini" && getStoredKeyPool().length) {
+    setAiStatus("已就緒", "status-ready");
+    return;
+  }
+
+  if (provider === "deepseek" && getStoredDeepSeekKey()) {
     setAiStatus("已就緒", "status-ready");
     return;
   }
@@ -654,6 +804,7 @@ async function pingAi() {
 }
 
 async function handleAsk() {
+  const provider = getStoredProvider();
   const question = aiQuestion?.value?.trim() || "";
   const files = [...(aiFileInput?.files || [])];
   const attachmentNames = files.map((file) => file.name);
@@ -671,11 +822,20 @@ async function handleAsk() {
   const pendingId = pushMessage("assistant", "思考中...", { pending: true });
 
   try {
-    const fileParts = await buildFileParts(files);
+    const fileParts = await buildFileParts(files, provider);
     let answer = "";
 
-    if (getStoredKeyPool().length) {
+    if (provider === "gemini" && getStoredKeyPool().length) {
       answer = await askWithKeyPool(question, context, fileParts);
+    } else if (provider === "deepseek" && getStoredDeepSeekKey()) {
+      answer = await askDeepSeekDirect(
+        question,
+        context,
+        getStoredModel(),
+        getStoredDeepSeekKey(),
+        getStoredBaseUrl(provider),
+        fileParts
+      );
     } else if (window.location.hostname.endsWith(".netlify.app")) {
       answer = await askNetlifyFunction(question, context, fileParts);
     } else {
@@ -784,6 +944,12 @@ if (aiFileInput) {
   });
 }
 
+if (aiProvider) {
+  aiProvider.addEventListener("change", () => {
+    applyProviderDefaults(aiProvider.value === "deepseek" ? "deepseek" : "gemini");
+  });
+}
+
 if (askAiButton) {
   askAiButton.addEventListener("click", () => {
     handleAsk();
@@ -791,6 +957,7 @@ if (askAiButton) {
 }
 
 loadConfig();
+applyProviderDefaults(getStoredProvider());
 renderSelectedFiles();
 renderChatMessages();
 autoGrowTextarea();

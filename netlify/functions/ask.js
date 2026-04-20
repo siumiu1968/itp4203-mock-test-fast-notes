@@ -1,7 +1,10 @@
-const DEFAULT_MODEL = process.env.GOOGLE_AI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash";
-const DIRECT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
+const DEFAULT_PROVIDER = process.env.AI_PROVIDER || "gemini";
+const DEFAULT_GEMINI_MODEL = process.env.GOOGLE_AI_MODEL || process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const DEFAULT_DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || "deepseek-reasoner";
+const DEFAULT_GEMINI_BASE_URL = process.env.GEMINI_BASE_URL || "https://generativelanguage.googleapis.com/v1beta";
+const DEFAULT_DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com";
 
-function getKeyPool() {
+function getGeminiKeyPool() {
   const envEntries = Object.entries(process.env)
     .filter(([key, value]) => /^GEMINI_API_KEY(_\d+)?$/.test(key) && value)
     .sort(([left], [right]) => {
@@ -25,11 +28,15 @@ function getKeyPool() {
   return envEntries;
 }
 
+function getDeepSeekKey() {
+  return (process.env.DEEPSEEK_API_KEY || "").trim();
+}
+
 function shouldRotateKey(message) {
   return /429|quota|resource[_ ]?exhausted|rate|exceed|limit|too many|unavailable/i.test(message);
 }
 
-function buildParts(question, context, extraParts) {
+function buildGeminiParts(question, context, extraParts) {
   return [
     {
       text:
@@ -45,9 +52,33 @@ function buildParts(question, context, extraParts) {
   ];
 }
 
-async function askWithKey({ apiKey, model, question, context, parts }) {
+function buildDeepSeekMessages(question, context, extraParts) {
+  const joined = (Array.isArray(extraParts) ? extraParts : [])
+    .map((part) => (part && typeof part.text === "string" ? part.text : ""))
+    .filter(Boolean)
+    .join("\n\n");
+
+  const userContent = [joined, `Question:\n${question}`].filter(Boolean).join("\n\n");
+
+  return [
+    {
+      role: "system",
+      content:
+        "You are a concise Android Kotlin exam helper. " +
+        "Answer in Traditional Chinese or simple English when code is clearer. " +
+        "Prefer short, paste-ready code when appropriate.\n\n" +
+        `Context:\n${context}`,
+    },
+    {
+      role: "user",
+      content: userContent,
+    },
+  ];
+}
+
+async function askGeminiWithKey({ apiKey, model, question, context, parts, baseUrl }) {
   const response = await fetch(
-    `${DIRECT_BASE_URL}/models/${encodeURIComponent(model)}:generateContent`,
+    `${baseUrl.replace(/\/$/, "")}/models/${encodeURIComponent(model)}:generateContent`,
     {
       method: "POST",
       headers: {
@@ -59,7 +90,7 @@ async function askWithKey({ apiKey, model, question, context, parts }) {
         contents: [
           {
             role: "user",
-            parts: buildParts(question, context, parts),
+            parts: buildGeminiParts(question, context, parts),
           },
         ],
       }),
@@ -68,7 +99,7 @@ async function askWithKey({ apiKey, model, question, context, parts }) {
 
   const payload = await response.json();
   if (!response.ok) {
-    throw new Error(payload.error?.message || `Google AI request failed (${response.status})`);
+    throw new Error(payload.error?.message || `Gemini request failed (${response.status})`);
   }
 
   const answer =
@@ -79,7 +110,35 @@ async function askWithKey({ apiKey, model, question, context, parts }) {
       .trim() || "";
 
   if (!answer) {
-    throw new Error("Google AI 沒有回覆內容");
+    throw new Error("Gemini 沒有回覆內容");
+  }
+
+  return answer;
+}
+
+async function askDeepSeek({ apiKey, model, question, context, parts, baseUrl }) {
+  const response = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      stream: false,
+      messages: buildDeepSeekMessages(question, context, parts),
+    }),
+  });
+
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload.error?.message || `DeepSeek request failed (${response.status})`);
+  }
+
+  const message = payload.choices?.[0]?.message || {};
+  const answer = (message.content || "").trim();
+  if (!answer) {
+    throw new Error("DeepSeek 沒有回覆內容");
   }
 
   return answer;
@@ -96,10 +155,16 @@ exports.handler = async (event) => {
 
   try {
     const payload = JSON.parse(event.body || "{}");
+    const provider = String(payload.provider || DEFAULT_PROVIDER).trim().toLowerCase() === "deepseek" ? "deepseek" : "gemini";
     const question = String(payload.question || "").trim();
     const context = String(payload.context || "").trim();
     const parts = Array.isArray(payload.parts) ? payload.parts : [];
-    const model = String(payload.model || DEFAULT_MODEL).trim() || DEFAULT_MODEL;
+    const model = String(
+      payload.model || (provider === "deepseek" ? DEFAULT_DEEPSEEK_MODEL : DEFAULT_GEMINI_MODEL)
+    ).trim();
+    const baseUrl = String(
+      payload.base_url || (provider === "deepseek" ? DEFAULT_DEEPSEEK_BASE_URL : DEFAULT_GEMINI_BASE_URL)
+    ).trim();
 
     if (!question) {
       return {
@@ -109,7 +174,25 @@ exports.handler = async (event) => {
       };
     }
 
-    const keyPool = getKeyPool();
+    if (provider === "deepseek") {
+      const apiKey = getDeepSeekKey();
+      if (!apiKey) {
+        return {
+          statusCode: 502,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({ error: "No DeepSeek API key configured on Netlify" }),
+        };
+      }
+
+      const answer = await askDeepSeek({ apiKey, model, question, context, parts, baseUrl });
+      return {
+        statusCode: 200,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({ answer, model, provider }),
+      };
+    }
+
+    const keyPool = getGeminiKeyPool();
     if (!keyPool.length) {
       return {
         statusCode: 502,
@@ -121,11 +204,11 @@ exports.handler = async (event) => {
     let lastError;
     for (const apiKey of keyPool) {
       try {
-        const answer = await askWithKey({ apiKey, model, question, context, parts });
+        const answer = await askGeminiWithKey({ apiKey, model, question, context, parts, baseUrl });
         return {
           statusCode: 200,
           headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ answer, model }),
+          body: JSON.stringify({ answer, model, provider }),
         };
       } catch (error) {
         lastError = error;
