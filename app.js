@@ -5,6 +5,7 @@ const copyButtons = [...document.querySelectorAll(".copy-button")];
 const hiddenAiTrigger = document.getElementById("hiddenAiTrigger");
 const aiModal = document.getElementById("aiModal");
 const closeAiModal = document.getElementById("closeAiModal");
+const panicHideStrip = document.getElementById("panicHideStrip");
 const aiConfigModal = document.getElementById("aiConfigModal");
 const closeAiConfig = document.getElementById("closeAiConfig");
 const saveAiConfig = document.getElementById("saveAiConfig");
@@ -21,6 +22,7 @@ const aiHiddenModel = document.getElementById("aiHiddenModel");
 const localBaseUrl = new URL(".", window.location.href);
 const localHealthUrl = new URL("api/health", localBaseUrl);
 const localAskUrl = new URL("api/ask", localBaseUrl);
+const netlifyAskUrl = new URL("/.netlify/functions/ask", window.location.origin);
 
 const DEFAULT_MODEL = "gemini-2.5-flash";
 const AI_KEY_POOL_STORAGE = "itp4203_gemini_key_pool";
@@ -424,9 +426,36 @@ async function askLocalProxy(question, context, fileParts) {
   return payload.answer || "AI 沒有回覆內容。";
 }
 
+async function askNetlifyFunction(question, context, fileParts) {
+  const response = await fetch(netlifyAskUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: getStoredModel(),
+      question,
+      context,
+      parts: fileParts,
+    }),
+  });
+
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload.error || "Netlify function failed");
+  }
+
+  return payload.answer || "AI 沒有回覆內容。";
+}
+
 async function pingAi() {
   if (getStoredKeyPool().length) {
     setAiStatus("已就緒", "status-ready");
+    return;
+  }
+
+  if (window.location.hostname.endsWith(".netlify.app")) {
+    setAiStatus("雲端", "status-ready");
     return;
   }
 
@@ -461,6 +490,14 @@ if (hiddenAiTrigger) {
 if (closeAiModal) {
   closeAiModal.addEventListener("click", () => {
     closeModal(aiModal);
+  });
+}
+
+if (panicHideStrip) {
+  panicHideStrip.addEventListener("click", (event) => {
+    if (event.target !== closeAiModal) {
+      closeModal(aiModal);
+    }
   });
 }
 
@@ -532,6 +569,8 @@ if (askAiButton) {
 
       if (getStoredKeyPool().length) {
         aiAnswer.textContent = await askWithKeyPool(question, context, fileParts);
+      } else if (window.location.hostname.endsWith(".netlify.app")) {
+        aiAnswer.textContent = await askNetlifyFunction(question, context, fileParts);
       } else {
         aiAnswer.textContent = await askLocalProxy(question, context, fileParts);
       }

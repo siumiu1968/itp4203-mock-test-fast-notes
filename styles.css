@@ -434,6 +434,18 @@ pre {
   margin-bottom: 0.5rem;
 }
 
+.ai-panic-strip {
+  min-height: 30px;
+  border-radius: 16px;
+  background: rgba(31, 36, 48, 0.03);
+  cursor: pointer;
+  padding: 0.15rem;
+}
+
+.ai-panic-strip:hover {
+  background: rgba(31, 36, 48, 0.06);
+}
+
 .close-ai-button {
   width: 26px;
   height: 26px;
