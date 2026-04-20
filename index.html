@@ -410,20 +410,41 @@ btnBack.setOnClickListener {
         <button id="closeAiModal" class="close-ai-button" type="button" aria-label="Close"></button>
       </div>
 
-      <div class="ai-shell">
-        <label for="aiQuestion">輸入問題</label>
-        <textarea id="aiQuestion" rows="6" placeholder="例如：幫我用最短方法寫 InsertActivity save，同埋解釋每一步做乜。"></textarea>
-
-        <label for="aiFileInput">上傳資料 / 檔案</label>
-        <input id="aiFileInput" type="file" multiple />
-        <div id="aiFileList" class="upload-list"></div>
-
-        <div class="ai-actions">
-          <button id="askAiButton" class="blank-send-button" type="button" aria-label="Send"></button>
+      <div class="ai-shell ai-chat-shell">
+        <div class="ai-chat-topbar">
+          <div class="ai-chat-brand">
+            <div class="chat-avatar bot-avatar" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="chat-icon">
+                <path d="M12 2 4 6v6c0 5.1 3.4 9.8 8 11 4.6-1.2 8-5.9 8-11V6l-8-4Z" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="ai-chat-meta">
+              <strong>Study Helper</strong>
+              <span>Mock test / Kotlin / Android</span>
+            </div>
+          </div>
           <span id="aiStatus" class="status-pill">未準備</span>
         </div>
 
-        <pre id="aiAnswer" class="ai-answer">輸入問題，必要時加埋文件，再按空白鍵送出。</pre>
+        <div id="chatHistory" class="chat-history" aria-live="polite"></div>
+
+        <div class="composer-wrap">
+          <div id="aiFileList" class="upload-list"></div>
+          <div class="chat-composer">
+            <label for="aiFileInput" class="icon-button attach-button" aria-label="Upload files">
+              <svg viewBox="0 0 24 24" class="chat-icon">
+                <path d="M16.5 6.5 9 14a3 3 0 1 0 4.24 4.24l7.07-7.07a5 5 0 1 0-7.07-7.07L5.46 11.9a7 7 0 0 0 9.9 9.9l5.3-5.3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+              </svg>
+            </label>
+            <input id="aiFileInput" type="file" multiple hidden />
+            <textarea id="aiQuestion" class="chat-input" rows="1" placeholder="輸入問題，或者加埋文件一齊問。"></textarea>
+            <button id="askAiButton" class="icon-button send-button" type="button" aria-label="Send">
+              <svg viewBox="0 0 24 24" class="chat-icon">
+                <path d="M3 20 21 12 3 4l3.5 8L3 20Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -432,7 +453,7 @@ btnBack.setOnClickListener {
     <div class="ai-config-card">
       <div class="panel-head">
         <h2>Helper Config</h2>
-        <p>呢層唔會喺主畫面顯示。你可以喺呢度貼 key pool，同埋改 hidden model。</p>
+        <p>呢層唔會喺主畫面顯示。你可以喺呢度貼 key pool，同埋改 hidden model。Mac 可用 `Command + Option + K`，或者右擊右下透明點。</p>
       </div>
 
       <label for="aiKeyPool">Gemini Key Pool</label>

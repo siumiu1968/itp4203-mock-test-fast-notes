@@ -13,11 +13,11 @@ const saveAiConfig = document.getElementById("saveAiConfig");
 const askAiButton = document.getElementById("askAiButton");
 const aiStatus = document.getElementById("aiStatus");
 const aiQuestion = document.getElementById("aiQuestion");
-const aiAnswer = document.getElementById("aiAnswer");
 const aiFileInput = document.getElementById("aiFileInput");
 const aiFileList = document.getElementById("aiFileList");
 const aiKeyPool = document.getElementById("aiKeyPool");
 const aiHiddenModel = document.getElementById("aiHiddenModel");
+const chatHistory = document.getElementById("chatHistory");
 
 const localBaseUrl = new URL(".", window.location.href);
 const localHealthUrl = new URL("api/health", localBaseUrl);
@@ -28,8 +28,22 @@ const DEFAULT_MODEL = "gemini-2.5-flash";
 const AI_KEY_POOL_STORAGE = "itp4203_gemini_key_pool";
 const AI_MODEL_STORAGE = "itp4203_hidden_model";
 const AI_ACTIVE_KEY_INDEX_STORAGE = "itp4203_active_key_index";
+const CHAT_HISTORY_STORAGE = "itp4203_hidden_chat_history_v1";
 const MAX_TEXT_CHARS = 120000;
 const MAX_FILE_BYTES = 18 * 1024 * 1024;
+const MAX_CHAT_MESSAGES = 40;
+
+const BOT_AVATAR = `
+  <svg viewBox="0 0 24 24" class="chat-icon">
+    <path d="M12 2 4 6v6c0 5.1 3.4 9.8 8 11 4.6-1.2 8-5.9 8-11V6l-8-4Z" fill="currentColor"/>
+  </svg>
+`;
+
+const USER_AVATAR = `
+  <svg viewBox="0 0 24 24" class="chat-icon">
+    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
+  </svg>
+`;
 
 if (searchInput) {
   searchInput.addEventListener("input", () => {
@@ -147,6 +161,171 @@ function escapeHtml(value) {
     if (char === ">") return "&gt;";
     return "&quot;";
   });
+}
+
+function formatText(value) {
+  return escapeHtml(value).replace(/\n/g, "<br>");
+}
+
+function formatTime(isoString) {
+  try {
+    return new Date(isoString).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch (error) {
+    return "";
+  }
+}
+
+function makeMessageId() {
+  if (window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
+  }
+  return `msg_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+function getDefaultMessages() {
+  return [
+    {
+      id: makeMessageId(),
+      role: "assistant",
+      text: "我而家會用對話方式答你。你可以直接問 Room、RecyclerView、Intent、XML、Kotlin，或者上傳 PDF、PPT、code 同圖片。",
+      attachments: [],
+      pending: false,
+      createdAt: new Date().toISOString(),
+    },
+  ];
+}
+
+function normalizeMessages(raw) {
+  if (!Array.isArray(raw) || !raw.length) {
+    return getDefaultMessages();
+  }
+
+  const normalized = raw
+    .filter((item) => item && typeof item.text === "string" && typeof item.role === "string")
+    .map((item) => ({
+      id: typeof item.id === "string" ? item.id : makeMessageId(),
+      role: item.role === "user" ? "user" : "assistant",
+      text: item.text,
+      attachments: Array.isArray(item.attachments) ? item.attachments.filter((entry) => typeof entry === "string") : [],
+      pending: Boolean(item.pending),
+      createdAt: typeof item.createdAt === "string" ? item.createdAt : new Date().toISOString(),
+    }));
+
+  return normalized.length ? normalized : getDefaultMessages();
+}
+
+function loadChatMessages() {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(CHAT_HISTORY_STORAGE) || "[]");
+    return normalizeMessages(parsed);
+  } catch (error) {
+    return getDefaultMessages();
+  }
+}
+
+let chatMessages = loadChatMessages();
+
+function saveChatMessages() {
+  window.localStorage.setItem(
+    CHAT_HISTORY_STORAGE,
+    JSON.stringify(chatMessages.slice(-MAX_CHAT_MESSAGES))
+  );
+}
+
+function scrollChatToBottom() {
+  if (!chatHistory) return;
+  requestAnimationFrame(() => {
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  });
+}
+
+function renderChatMessages() {
+  if (!chatHistory) return;
+
+  chatHistory.innerHTML = chatMessages
+    .map((message) => {
+      const isUser = message.role === "user";
+      const avatar = isUser ? USER_AVATAR : BOT_AVATAR;
+      const author = isUser ? "You" : "Helper";
+      const attachmentHtml = message.attachments.length
+        ? `
+          <div class="chat-message-files">
+            ${message.attachments
+              .map((name) => `<span class="chat-file-pill">${escapeHtml(name)}</span>`)
+              .join("")}
+          </div>
+        `
+        : "";
+
+      return `
+        <div class="chat-row ${isUser ? "is-user" : "is-assistant"}">
+          <div class="chat-avatar ${isUser ? "user-avatar" : "bot-avatar"}">${avatar}</div>
+          <div class="chat-message-stack">
+            <div class="chat-author">${author}</div>
+            ${attachmentHtml}
+            <div class="chat-bubble ${isUser ? "user-bubble" : "assistant-bubble"} ${message.pending ? "is-pending" : ""}">
+              ${formatText(message.text)}
+            </div>
+            <div class="chat-time">${formatTime(message.createdAt)}</div>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  scrollChatToBottom();
+}
+
+function pushMessage(role, text, options = {}) {
+  const message = {
+    id: makeMessageId(),
+    role,
+    text,
+    attachments: options.attachments || [],
+    pending: Boolean(options.pending),
+    createdAt: new Date().toISOString(),
+  };
+
+  chatMessages = [...chatMessages, message].slice(-MAX_CHAT_MESSAGES);
+  saveChatMessages();
+  renderChatMessages();
+  return message.id;
+}
+
+function updateMessage(messageId, updates) {
+  chatMessages = chatMessages.map((message) => {
+    if (message.id !== messageId) {
+      return message;
+    }
+
+    return {
+      ...message,
+      ...updates,
+      pending: false,
+    };
+  });
+
+  saveChatMessages();
+  renderChatMessages();
+}
+
+function autoGrowTextarea() {
+  if (!aiQuestion) return;
+  aiQuestion.style.height = "auto";
+  aiQuestion.style.height = `${Math.min(aiQuestion.scrollHeight, 180)}px`;
+}
+
+function clearComposer() {
+  if (aiQuestion) {
+    aiQuestion.value = "";
+    autoGrowTextarea();
+  }
+
+  if (aiFileInput) {
+    aiFileInput.value = "";
+  }
+
+  renderSelectedFiles();
 }
 
 function renderSelectedFiles() {
@@ -474,9 +653,52 @@ async function pingAi() {
   setAiStatus("未設置");
 }
 
+async function handleAsk() {
+  const question = aiQuestion?.value?.trim() || "";
+  const files = [...(aiFileInput?.files || [])];
+  const attachmentNames = files.map((file) => file.name);
+  const context =
+    "You are answering questions about an Android Kotlin mock test with Room, RecyclerView, Intent, Image picker, XML layouts, and beginner-level Kotlin explanations. Keep answers concise, clear, and paste-ready.";
+
+  if (!question) {
+    pushMessage("assistant", "請先輸入問題。");
+    return;
+  }
+
+  pushMessage("user", question, { attachments: attachmentNames });
+  clearComposer();
+  setAiStatus("思考中");
+  const pendingId = pushMessage("assistant", "思考中...", { pending: true });
+
+  try {
+    const fileParts = await buildFileParts(files);
+    let answer = "";
+
+    if (getStoredKeyPool().length) {
+      answer = await askWithKeyPool(question, context, fileParts);
+    } else if (window.location.hostname.endsWith(".netlify.app")) {
+      answer = await askNetlifyFunction(question, context, fileParts);
+    } else {
+      answer = await askLocalProxy(question, context, fileParts);
+    }
+
+    updateMessage(pendingId, { text: answer });
+    setAiStatus("已完成", "status-ready");
+  } catch (error) {
+    updateMessage(pendingId, {
+      text:
+        `AI 未能使用：${error.message}\n\n` +
+        "隱藏設定：Mac 用 Command + Option + K；Windows 用 Ctrl + Alt + K；或者右擊右下透明點。",
+    });
+    setAiStatus("出錯", "status-error");
+  }
+}
+
 if (hiddenAiTrigger) {
   hiddenAiTrigger.addEventListener("click", () => {
     openModal(aiModal);
+    renderChatMessages();
+    autoGrowTextarea();
     aiQuestion?.focus();
   });
 
@@ -536,12 +758,25 @@ window.addEventListener("keydown", (event) => {
     closeModal(aiConfigModal);
   }
 
-  if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "k") {
+  if ((event.ctrlKey || event.metaKey) && event.altKey && event.key.toLowerCase() === "k") {
     event.preventDefault();
     openModal(aiConfigModal);
     aiKeyPool?.focus();
   }
 });
+
+if (aiQuestion) {
+  aiQuestion.addEventListener("input", () => {
+    autoGrowTextarea();
+  });
+
+  aiQuestion.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleAsk();
+    }
+  });
+}
 
 if (aiFileInput) {
   aiFileInput.addEventListener("change", () => {
@@ -550,41 +785,13 @@ if (aiFileInput) {
 }
 
 if (askAiButton) {
-  askAiButton.addEventListener("click", async () => {
-    const question = aiQuestion?.value?.trim() || "";
-    const context =
-      "You are answering questions about an Android Kotlin mock test with Room, RecyclerView, Intent, Image picker, XML layouts, and beginner-level Kotlin explanations. Keep answers concise, clear, and paste-ready.";
-
-    if (!question) {
-      aiAnswer.textContent = "請先輸入問題。";
-      return;
-    }
-
-    setAiStatus("思考中");
-    aiAnswer.textContent = "處理中...";
-
-    try {
-      const files = [...(aiFileInput?.files || [])];
-      const fileParts = await buildFileParts(files);
-
-      if (getStoredKeyPool().length) {
-        aiAnswer.textContent = await askWithKeyPool(question, context, fileParts);
-      } else if (window.location.hostname.endsWith(".netlify.app")) {
-        aiAnswer.textContent = await askNetlifyFunction(question, context, fileParts);
-      } else {
-        aiAnswer.textContent = await askLocalProxy(question, context, fileParts);
-      }
-
-      setAiStatus("已完成", "status-ready");
-    } catch (error) {
-      aiAnswer.textContent =
-        `AI 未能使用：${error.message}\n\n` +
-        "隱藏設定：按 Ctrl + Alt + K，貼入 key pool。quota 用完會自動轉下一條。";
-      setAiStatus("出錯", "status-error");
-    }
+  askAiButton.addEventListener("click", () => {
+    handleAsk();
   });
 }
 
 loadConfig();
 renderSelectedFiles();
+renderChatMessages();
+autoGrowTextarea();
 pingAi();
