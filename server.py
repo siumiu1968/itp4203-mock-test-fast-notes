@@ -13,32 +13,35 @@ from urllib import error, request
 ROOT = Path(__file__).resolve().parent
 HOST = os.environ.get("NOTES_SITE_HOST", "127.0.0.1")
 PORT = int(os.environ.get("NOTES_SITE_PORT", "8000"))
-MODEL = os.environ.get("GOOGLE_AI_MODEL", os.environ.get("GEMINI_MODEL", "gemma-4-26b-a4b-it"))
+MODEL = os.environ.get("GOOGLE_AI_MODEL", os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"))
 API_KEY = os.environ.get("GOOGLE_AI_API_KEY", os.environ.get("GEMINI_API_KEY", os.environ.get("GOOGLE_API_KEY")))
 
 
-def ask_google_ai(question: str, context: str, model: str | None = None) -> str:
+def ask_google_ai(question: str, context: str, model: str | None = None, extra_parts: list[dict] | None = None) -> str:
     if not API_KEY:
       raise RuntimeError("Missing GOOGLE_AI_API_KEY / GEMINI_API_KEY / GOOGLE_API_KEY")
 
     selected_model = (model or MODEL).strip() or MODEL
 
-    prompt = (
-        "You are a concise Android Kotlin exam helper. "
-        "Answer in Traditional Chinese or simple English when code is clearer. "
-        "Prefer short, paste-ready code when appropriate.\n\n"
-        f"Context:\n{context}\n\nQuestion:\n{question}"
-    )
-
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{selected_model}:generateContent?key={API_KEY}"
+    parts = [
+        {
+            "text": (
+                "You are a concise Android Kotlin exam helper. "
+                "Answer in Traditional Chinese or simple English when code is clearer. "
+                "Prefer short, paste-ready code when appropriate.\n\n"
+                f"Context:\n{context}"
+            )
+        }
+    ]
+    if extra_parts:
+        parts.extend(extra_parts)
+    parts.append({"text": f"Question:\n{question}"})
+
     payload = {
         "contents": [
             {
-                "parts": [
-                    {
-                        "text": prompt,
-                    }
-                ]
+                "parts": parts
             }
         ]
     }
@@ -108,10 +111,13 @@ class NotesHandler(SimpleHTTPRequestHandler):
             model = str(payload.get("model", "")).strip()
             question = str(payload.get("question", "")).strip()
             context = str(payload.get("context", "")).strip()
+            parts = payload.get("parts") or []
             if not question:
                 raise ValueError("Missing question")
+            if not isinstance(parts, list):
+                raise ValueError("Invalid parts")
 
-            answer = ask_google_ai(question, context, model=model)
+            answer = ask_google_ai(question, context, model=model, extra_parts=parts)
             self._send_json({"answer": answer, "model": model or MODEL})
         except ValueError as exc:
             self._send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)

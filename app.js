@@ -402,7 +402,7 @@ async function askWithKeyPool(question, context, fileParts) {
   throw lastError || new Error("全部 key 都未能使用");
 }
 
-async function askLocalProxy(question, context) {
+async function askLocalProxy(question, context, fileParts) {
   const response = await fetch(localAskUrl, {
     method: "POST",
     headers: {
@@ -412,6 +412,7 @@ async function askLocalProxy(question, context) {
       model: getStoredModel(),
       question,
       context,
+      parts: fileParts,
     }),
   });
 
@@ -531,10 +532,8 @@ if (askAiButton) {
 
       if (getStoredKeyPool().length) {
         aiAnswer.textContent = await askWithKeyPool(question, context, fileParts);
-      } else if (files.length) {
-        throw new Error("有附件時請先設定 key pool");
       } else {
-        aiAnswer.textContent = await askLocalProxy(question, context);
+        aiAnswer.textContent = await askLocalProxy(question, context, fileParts);
       }
 
       setAiStatus("已完成", "status-ready");
