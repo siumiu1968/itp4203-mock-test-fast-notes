@@ -7,7 +7,7 @@ This folder contains a static website for the Android mock test:
 - official Android / Kotlin links that match the mock test tasks
 - copy-ready short code blocks
 - downloadable full mock answer files bundled into `./files`
-- an optional AI panel
+- a hidden AI helper with file upload
 
 ## Open The Site
 
@@ -26,14 +26,26 @@ Then open:
 http://127.0.0.1:8000
 ```
 
+## Hidden AI Helper
+
+The public page no longer shows a visible AI section.
+
+- Hidden entry: click the tiny blank spot at the bottom-right corner.
+- Hidden settings: right-click that blank spot, or press `Ctrl + Alt + K`.
+- Visible helper UI only shows:
+  - question box
+  - file upload
+  - blank send button
+  - answer area
+
 ## Enable AI Safely
 
 There are 2 AI modes now:
 
-1. Public static mode: paste your own Google AI key into the website UI. The key stays in that browser only.
+1. Public static mode: store a Gemini key pool in hidden settings. The pool stays in that browser via `localStorage`, and the site auto-rotates to the next key when quota errors happen.
 2. Local proxy mode: keep the key on the server side with environment variables.
 
-Do **not** hardcode the API key into front-end JavaScript.
+Do **not** hardcode the API key pool into public front-end JavaScript.
 
 Set one of these environment variables before running the server:
 
@@ -54,7 +66,7 @@ Supported env names for the model:
 - `GOOGLE_AI_MODEL`
 - `GEMINI_MODEL`
 
-You can also override the model directly in the website UI by typing a model code into the `模型代號` field before sending a question.
+You can also override the hidden model in the hidden settings panel.
 
 ## Public Deployment
 
