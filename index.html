@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ITP4203 Mock Test Fast Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">ITP4203 Android Mock Test</p>
+      <h1>今日實戰快搜站</h1>
+      <p class="hero-text">
+        呢個網站係為咗今日份 mock / test 快速搵答案而整。
+        左邊先睇分數位，右邊直接開官方網站，再下面就係可 copy 嘅最短 code。
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#official-links">先睇官方網站</a>
+        <a class="button button-secondary" href="#copy-zone">直接 copy code</a>
+      </div>
+    </div>
+
+    <aside class="score-card">
+      <h2>最值分位</h2>
+      <ul>
+        <li><strong>Start Page</strong>：RecyclerView 顯示 database 資料</li>
+        <li><strong>Insert Page</strong>：Save 真係 insert 到 Room</li>
+        <li><strong>Select Image</strong>：揀完圖會預覽</li>
+        <li><strong>Details Page</strong>：按 item 後顯示同一筆資料</li>
+        <li><strong>唔好 crash</strong>：開 app、save、back、details 都要正常</li>
+      </ul>
+    </aside>
+  </header>
+
+  <main class="layout">
+    <nav class="side-nav">
+      <a href="#mapping">功能對照</a>
+      <a href="#official-links">官方網站</a>
+      <a href="#copy-zone">Copy Zone</a>
+      <a href="#local-files">遠端答案下載</a>
+      <a href="#ai-panel">AI 問答</a>
+    </nav>
+
+    <section class="content">
+      <section id="mapping" class="panel">
+        <div class="panel-head">
+          <h2>Mock Test 功能對照</h2>
+          <p>先睇清楚每一部分其實要搵咩。</p>
+        </div>
+
+        <div class="mapping-grid">
+          <article class="map-card" data-tags="start recycler room list">
+            <h3>Start Page</h3>
+            <p>你最主要要搵到 3 樣嘢：</p>
+            <ul>
+              <li>RecyclerView 點樣顯示 list</li>
+              <li>Room 點樣讀出全部資料</li>
+              <li>按 item 之後點去 DetailsActivity</li>
+            </ul>
+            <p class="answer-line">最短答案：`layoutManager + adapter + dao.getAllCameras() + putExtra("camera_id", id)`</p>
+          </article>
+
+          <article class="map-card" data-tags="insert image picker save room">
+            <h3>Insert Page</h3>
+            <p>你最主要要搵到 4 樣嘢：</p>
+            <ul>
+              <li>EditText 讀值</li>
+              <li>Image picker / GetContent</li>
+              <li>建立 Camera object</li>
+              <li>dao.insertCamera(camera)</li>
+            </ul>
+            <p class="answer-line">最短答案：`registerForActivityResult(GetContent()) + setImageURI + insert + finish()`</p>
+          </article>
+
+          <article class="map-card" data-tags="details intent imageview">
+            <h3>Details Page</h3>
+            <p>你最主要要搵到 3 樣嘢：</p>
+            <ul>
+              <li>intent.getStringExtra() 收 id</li>
+              <li>dao.getCameraById(id) 查單一資料</li>
+              <li>tvTitle / tvDescription / imageView 顯示</li>
+            </ul>
+            <p class="answer-line">最短答案：`getStringExtra + getCameraById + Uri.parse(imagePath)`</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="official-links" class="panel">
+        <div class="panel-head">
+          <h2>官方網站快鏈</h2>
+          <p>全部都係官方 / 原廠文件，方便你考試時開去搵 keyword 再 copy / 改。</p>
+        </div>
+
+        <div class="toolbar">
+          <input id="resourceSearch" type="search" placeholder="輸入 RecyclerView / Room / Intent / Image..." />
+        </div>
+
+        <div class="resource-grid">
+          <article class="resource-card" data-tags="recyclerview start page list adapter viewholder">
+            <div class="card-top">
+              <span class="tag">Start Page</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>Create Dynamic Lists with RecyclerView</h3>
+            <p>講 RecyclerView、Adapter、ViewHolder、layoutManager。你首頁個 camera list 就係呢部分。</p>
+            <p class="mini">建議直接搵 keyword：`RecyclerView.Adapter`, `ViewHolder`, `layoutManager`。</p>
+            <a href="https://developer.android.com/develop/ui/views/layout/recyclerview" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="room database entity dao insert query start insert details">
+            <div class="card-top">
+              <span class="tag">Room</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>Save Data in a Local Database Using Room</h3>
+            <p>講 `@Entity`、`@Dao`、`@Database` 同點樣由 database 讀寫資料。mock test 最值分部分。</p>
+            <p class="mini">建議直接搵 keyword：`@Entity`, `@Dao`, `databaseBuilder`, `insert`, `Query`。</p>
+            <a href="https://developer.android.com/training/data-storage/room" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="intent details activity startactivity putextra getstringextra navigation">
+            <div class="card-top">
+              <span class="tag">Navigation</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>Intents and Intent Filters</h3>
+            <p>講 Intent 基本概念。你要嘅係由首頁去 Details 頁，再用 extra 帶 `camera_id`。</p>
+            <p class="mini">建議直接搵 keyword：`putExtra`, `getStringExtra`, `startActivity`。</p>
+            <a href="https://developer.android.com/guide/components/intents-filters" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="image picker getcontent select image insert page activity result">
+            <div class="card-top">
+              <span class="tag">Select Image</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>Get a Result from an Activity</h3>
+            <p>講 `registerForActivityResult(...)`。你選圖最實用就係 `ActivityResultContracts.GetContent()`。</p>
+            <p class="mini">建議直接搵 keyword：`registerForActivityResult`, `GetContent`。</p>
+            <a href="https://developer.android.com/training/basics/intents/result" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="photo picker image selection official android">
+            <div class="card-top">
+              <span class="tag">Image</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>Photo Picker</h3>
+            <p>如果你考試時想睇官方點講系統選圖，可以開呢頁。概念同你 mock 要做嘅揀圖好近。</p>
+            <p class="mini">建議直接搵 keyword：`pick visual media`, `selected URI`。</p>
+            <a href="https://developer.android.com/training/data-storage/shared/photopicker" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="imageview uri details insert preview">
+            <div class="card-top">
+              <span class="tag">ImageView</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>ImageView Reference</h3>
+            <p>主要用嚟查 `setImageURI(...)`、`scaleType` 呢啲畫面顯示細節。</p>
+            <p class="mini">建議直接搵 keyword：`setImageURI`, `scaleType`。</p>
+            <a href="https://developer.android.com/reference/android/widget/ImageView" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="edittext input form insert page">
+            <div class="card-top">
+              <span class="tag">Input</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>Text Fields</h3>
+            <p>講 EditText / text field。你 Insert Page 啲 `Name` 同 `Description` 就係呢類。</p>
+            <p class="mini">建議直接搵 keyword：`EditText`, `inputType`, `hint`。</p>
+            <a href="https://developer.android.com/develop/ui/views/touch-and-input/text-input" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="fab insert button material">
+            <div class="card-top">
+              <span class="tag">Button</span>
+              <span class="tag soft">Android 官方</span>
+            </div>
+            <h3>FloatingActionButton Reference</h3>
+            <p>如果你首頁用 `+` 浮動按鈕，呢頁最直接。你唔跟位都冇問題，最重要係有粒按鈕同識 click。</p>
+            <p class="mini">建議直接搵 keyword：`FloatingActionButton`, `setOnClickListener`。</p>
+            <a href="https://developer.android.com/reference/com/google/android/material/floatingactionbutton/FloatingActionButton" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="kotlin class null safety">
+            <div class="card-top">
+              <span class="tag">Kotlin</span>
+              <span class="tag soft">Kotlin 官方</span>
+            </div>
+            <h3>Kotlin Classes</h3>
+            <p>如果你考試時突然唔記得 constructor、property、class 點寫，可以開呢頁。</p>
+            <p class="mini">建議直接搵 keyword：`class`, `constructor`, `property`。</p>
+            <a href="https://kotlinlang.org/docs/classes.html" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="kotlin null safety elvis safe call">
+            <div class="card-top">
+              <span class="tag">Kotlin</span>
+              <span class="tag soft">Kotlin 官方</span>
+            </div>
+            <h3>Kotlin Null Safety</h3>
+            <p>你考試見到 `?`、`?.`、`?:` 唔記得時，可以開呢頁補腦。</p>
+            <p class="mini">建議直接搵 keyword：`safe call`, `elvis operator`, `nullable`。</p>
+            <a href="https://kotlinlang.org/docs/null-safety.html" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="copy-zone" class="panel">
+        <div class="panel-head">
+          <h2>Copy Zone</h2>
+          <p>下面係最短、最貼 mock test 嘅可 copy 片段。每段都係照你份題目去寫。</p>
+        </div>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>Room：Camera Entity</h3>
+            <button class="copy-button" data-copy-target="code-camera">Copy</button>
+          </div>
+          <p>用途：定義一筆 camera 資料長相，對應 `camera_table`。</p>
+          <pre id="code-camera"><code>@Entity(tableName = "camera_table")
+data class Camera(
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
+    val name: String,
+    val descriptions: String,
+    val imagePath: String
+)</code></pre>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>Room：CameraDao</h3>
+            <button class="copy-button" data-copy-target="code-dao">Copy</button>
+          </div>
+          <p>用途：首頁查全部、詳細頁查單一資料、Insert page 做 insert。</p>
+          <pre id="code-dao"><code>@Dao
+interface CameraDao {
+    @Query("SELECT * FROM camera_table")
+    fun getAllCameras(): List&lt;Camera&gt;
+
+    @Query("SELECT * FROM camera_table WHERE id = :id LIMIT 1")
+    fun getCameraById(id: String): Camera?
+
+    @Insert
+    fun insertCamera(camera: Camera)
+}</code></pre>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>Room：AppDatabase</h3>
+            <button class="copy-button" data-copy-target="code-db">Copy</button>
+          </div>
+          <p>用途：題目指定 database 名係 `camera_database`，呢段就係個主盒。</p>
+          <pre id="code-db"><code>@Database(entities = [Camera::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun cameraDao(): CameraDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "camera_database"
+                )
+                    .allowMainThreadQueries()
+                    .build()
+
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}</code></pre>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>MainActivity：首頁 list + item click</h3>
+            <button class="copy-button" data-copy-target="code-main">Copy</button>
+          </div>
+          <p>用途：首頁顯示 list，按 `+` 去 Insert，按 item 去 Details。</p>
+          <pre id="code-main"><code>db = AppDatabase.getDatabase(this)
+recyclerView = findViewById(R.id.recyclerView)
+fabInsert = findViewById(R.id.fabInsert)
+
+adapter = CameraAdapter(emptyList()) { camera ->
+    val intent = Intent(this, DetailsActivity::class.java)
+    intent.putExtra("camera_id", camera.id)
+    startActivity(intent)
+}
+
+recyclerView.layoutManager = LinearLayoutManager(this)
+recyclerView.adapter = adapter
+
+override fun onResume() {
+    super.onResume()
+    val cameraList = db.cameraDao().getAllCameras()
+    adapter.updateData(cameraList)
+}</code></pre>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>InsertActivity：Select Image + Save</h3>
+            <button class="copy-button" data-copy-target="code-insert">Copy</button>
+          </div>
+          <p>用途：最值分位。呢段處理選圖、預覽、save 入 Room。</p>
+          <pre id="code-insert"><code>private var selectedImageUri: Uri? = null
+
+private val imagePicker =
+    registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            selectedImageUri = uri
+            imageView.setImageURI(uri)
+            imageView.visibility = ImageView.VISIBLE
+        }
+    }
+
+btnSelectImage.setOnClickListener {
+    imagePicker.launch("image/*")
+}
+
+btnSave.setOnClickListener {
+    val name = etName.text.toString().trim()
+    val description = etDescription.text.toString().trim()
+
+    if (name.isEmpty()) return@setOnClickListener
+
+    val camera = Camera(
+        name = name,
+        descriptions = description,
+        imagePath = selectedImageUri?.toString() ?: ""
+    )
+
+    db.cameraDao().insertCamera(camera)
+    finish()
+}</code></pre>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>DetailsActivity：收 id + 顯示資料</h3>
+            <button class="copy-button" data-copy-target="code-details">Copy</button>
+          </div>
+          <p>用途：詳細頁讀返同一筆資料，再顯示圖、名、描述。</p>
+          <pre id="code-details"><code>val cameraId = intent.getStringExtra("camera_id")
+if (cameraId != null) {
+    val camera = db.cameraDao().getCameraById(cameraId) ?: return
+    tvTitle.text = camera.name
+    tvDescription.text = "Description: ${camera.descriptions}"
+
+    if (camera.imagePath.isNotEmpty()) {
+        imageView.setImageURI(Uri.parse(camera.imagePath))
+    }
+}
+
+btnBack.setOnClickListener {
+    finish()
+}</code></pre>
+        </article>
+      </section>
+
+      <section id="local-files" class="panel">
+        <div class="panel-head">
+          <h2>遠端答案檔下載</h2>
+          <p>下面全部檔案都會跟住網站一齊公開。換另一部電腦都照樣可以開、可以下載，唔再依賴你自己部機。</p>
+        </div>
+
+        <div class="file-grid">
+          <a href="./files/mock_test_answer.zip" download>完整答案 ZIP</a>
+          <a href="./files/ITP4203_Mock_Test_Answer_and_Explanation.docx" download>Mock 解釋 Word</a>
+          <a href="./files/MOCK_TEST_CHEATSHEET.md" target="_blank" rel="noreferrer">Cheatsheet</a>
+          <a href="./files/mock_test_answer/MainActivity.kt" target="_blank" rel="noreferrer">MainActivity.kt</a>
+          <a href="./files/mock_test_answer/InsertActivity.kt" target="_blank" rel="noreferrer">InsertActivity.kt</a>
+          <a href="./files/mock_test_answer/DetailsActivity.kt" target="_blank" rel="noreferrer">DetailsActivity.kt</a>
+          <a href="./files/mock_test_answer/Camera.kt" target="_blank" rel="noreferrer">Camera.kt</a>
+          <a href="./files/mock_test_answer/CameraDao.kt" target="_blank" rel="noreferrer">CameraDao.kt</a>
+          <a href="./files/mock_test_answer/AppDatabase.kt" target="_blank" rel="noreferrer">AppDatabase.kt</a>
+          <a href="./files/mock_test_answer/CameraAdapter.kt" target="_blank" rel="noreferrer">CameraAdapter.kt</a>
+          <a href="./files/mock_test_answer/activity_main.xml" target="_blank" rel="noreferrer">activity_main.xml</a>
+          <a href="./files/mock_test_answer/activity_insert.xml" target="_blank" rel="noreferrer">activity_insert.xml</a>
+          <a href="./files/mock_test_answer/activity_details.xml" target="_blank" rel="noreferrer">activity_details.xml</a>
+          <a href="./files/mock_test_answer/item_camera.xml" target="_blank" rel="noreferrer">item_camera.xml</a>
+        </div>
+      </section>
+
+      <section id="ai-panel" class="panel">
+        <div class="panel-head">
+          <h2>AI 問答面板</h2>
+          <p>
+            公開版最快方法係直接喺瀏覽器貼你自己嘅 Google AI Studio key。
+            如果你唔貼 key，網站就會退回去試本地 proxy。
+          </p>
+        </div>
+
+        <div class="ai-shell">
+          <label for="aiApiKey">Google AI API Key</label>
+          <input id="aiApiKey" type="password" placeholder="可留空；公開版建議貼你自己嘅 key，會只存喺呢個瀏覽器" />
+          <label for="aiModel">模型代號</label>
+          <input id="aiModel" type="text" value="gemma-4-26b-a4b-it" placeholder="例如：gemma-4-26b-a4b-it，或者你自己可用嘅 31B model id" />
+          <label for="aiQuestion">輸入問題</label>
+          <textarea id="aiQuestion" rows="6" placeholder="例：幫我寫最短版 InsertActivity Save 邏輯，只要 Room insert + finish()"></textarea>
+          <p class="helper-text">
+            冇 key 都可以先用下面官方入口：
+            <a href="https://aistudio.google.com/" target="_blank" rel="noreferrer">Google AI Studio</a>
+            /
+            <a href="https://gemini.google.com/" target="_blank" rel="noreferrer">Gemini</a>
+          </p>
+          <div class="ai-actions">
+            <button id="askAiButton" class="button button-primary" type="button">問 AI</button>
+            <span id="aiStatus" class="status-pill">未連接</span>
+          </div>
+          <pre id="aiAnswer" class="ai-answer">公開版用法：貼你自己 Google AI key，就可以直接喺網站問。冇 key 就只會試本地 proxy。</pre>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>最快用法：先開官方網站卡片，再去 Copy Zone 攞最短答案，再按需要改字眼。</p>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

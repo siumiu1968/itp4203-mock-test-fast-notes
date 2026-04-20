@@ -1,0 +1,4 @@
+<application>
+    <activity android:name=".InsertActivity" />
+    <activity android:name=".DetailsActivity" />
+</application>
