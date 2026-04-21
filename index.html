@@ -101,7 +101,7 @@
       <section id="exam-steps" class="panel">
         <div class="panel-head">
           <h2>Step-by-Step：完成 Test 流程</h2>
-          <p>呢段只講考試落手順序。每一步分清楚：做咩、主力睇邊份 Lab、做完下一步去邊。</p>
+          <p>呢段只保留考試落手順序。每一步只講三樣：而家做咩、主要睇邊份 Lab、做完即刻下一步做咩。</p>
         </div>
 
         <div class="callout-card">
@@ -111,7 +111,8 @@
           <p><strong>Lab 3</strong>：Activity 跳頁、`Intent`、`putExtra` / `getStringExtra`、Details page、Activity Result / image picker 概念。</p>
           <p><strong>Lab 4</strong>：只負責 Room database：Gradle/KSP、Entity、Dao、AppDatabase、insert/query。</p>
           <p><strong>Lab 5</strong>：只有題目講 API / server / HTTP / GET / POST 先用。</p>
-          <p class="answer-line">記法：畫面=Lab 1/2/3，database=Lab 4，online API=Lab 5。</p>
+          <p class="answer-line">記法：畫面 = Lab 1 / 2 / 3，database = Lab 4，online API = Lab 5。</p>
+          <p class="answer-line">落手順序：開 project -&gt; Room setup -&gt; Room 三件套 -&gt; XML -&gt; Adapter -&gt; Main -&gt; Insert -&gt; Details -&gt; Manifest -&gt; 測試。</p>
         </div>
 
         <div class="exam-step-grid">
@@ -130,7 +131,7 @@
               <span class="step-badge">2</span>
               <h3>加入 Room API / KSP</h3>
             </div>
-            <p><strong>做咩：</strong>改 `libs.versions.toml`、project `build.gradle.kts`、app `build.gradle.kts`、`gradle.properties`，再 `Sync Now`。</p>
+            <p><strong>做咩：</strong>改 `libs.versions.toml`、project `build.gradle.kts`、app `build.gradle.kts`，再 `Sync Now`。`gradle.properties` 只係跟 Lab 4 寫法時先補。</p>
             <p><strong>主力 Lab：</strong>Lab 4 Step 2-6。只有 Room 設定先開 Lab 4。</p>
             <p><strong>直接 copy：</strong><a href="#lab4-room-setup">Lab 4 Room API 教程</a>。</p>
             <p><strong>下一步：</strong>`@Entity`、`@Dao`、`RoomDatabase` 唔紅之後，寫三個 database Kotlin 檔。</p>
@@ -152,7 +153,7 @@
               <span class="step-badge">4</span>
               <h3>畫四個 XML</h3>
             </div>
-            <p><strong>做咩：</strong>建立 `activity_main.xml`、`activity_insert.xml`、`activity_details.xml`、`item_camera.xml`。</p>
+            <p><strong>做咩：</strong>建立 `activity_main.xml`、`activity_insert.xml`、`activity_details.xml`、`item_camera.xml`。先對齊 id，之後 Kotlin 就唔會亂。</p>
             <p><strong>主力 Lab：</strong>Lab 1 負責 Button / EditText / ImageView；Lab 2 負責 RecyclerView / item row；Lab 3 負責 Details page。</p>
             <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 入面第 8-11 個檔案。</p>
             <p><strong>下一步：</strong>寫 `CameraAdapter.kt`，將 database list 顯示到 `RecyclerView`。</p>
@@ -185,8 +186,8 @@
               <span class="step-badge">7</span>
               <h3>寫 InsertActivity：輸入 + 選圖 + Save</h3>
             </div>
-            <p><strong>做咩：</strong>讀 `EditText`、開 image picker、預覽圖片、建立 `Camera` object、呼叫 `insertCamera()`。</p>
-            <p><strong>主力 Lab：</strong>Lab 1 負責輸入/button；Ch 3 負責 image picker；Lab 4 只負責 insert database。</p>
+            <p><strong>做咩：</strong>讀 `EditText`、開 image picker、預覽圖片、建立 `Camera` object、呼叫 `insertCamera()`。時間唔夠時，圖片可最後先補。</p>
+            <p><strong>主力 Lab：</strong>Lab 1 負責輸入/button；Lab 3 負責 image picker；Lab 4 只負責 insert database。</p>
             <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 第 6 個檔案。</p>
             <p><strong>下一步：</strong>寫 `DetailsActivity.kt`，用 id 查返同一筆資料。</p>
           </article>
@@ -219,7 +220,7 @@
               <h3>最後測試流程</h3>
             </div>
             <p><strong>做咩：</strong>開 app -> 按 `+` -> 輸入 name / description -> Select Image -> Save -> 首頁見到新 item -> 按 item -> Details 見到同一筆資料 -> Back。</p>
-            <p><strong>出錯時：</strong>紅字先睇 import / package / XML id；crash 就睇 Logcat 第一個 `Caused by`。</p>
+            <p><strong>出錯時：</strong>紅字先睇 import / package / XML id；crash 就睇 Logcat 第一個 `Caused by`；畫面冇資料就先查 Dao / id 名有冇寫錯。</p>
             <p><strong>下一步：</strong>如果真正題目變種，先改 Entity 名同欄位，再照同一條流程做。</p>
           </article>
         </div>
@@ -1783,11 +1784,14 @@ class DetailsActivity : AppCompatActivity() {
       <section id="local-files" class="panel">
         <div class="panel-head">
           <h2>遠端答案檔下載</h2>
-          <p>下面全部檔案都會跟住網站一齊公開。換另一部電腦都照樣可以開、可以下載，唔再依賴你自己部機。</p>
+          <p>下面全部檔案都會跟住網站一齊公開。分兩類：上面先係可直接下載開用嘅 Android Studio project / APK，下面先係逐個睇嘅 code snippets。</p>
+          <p class="answer-line">`Android Studio Project ZIP` 係已經喺本機 `assembleDebug` build 成功嘅版本。</p>
         </div>
 
         <div class="file-grid">
-          <a href="./files/mock_test_answer.zip" download>完整答案 ZIP</a>
+          <a href="./files/mock_test_android_studio_project.zip" download>Android Studio Project ZIP</a>
+          <a href="./files/mock_test_answer_debug.apk" download>Debug APK</a>
+          <a href="./files/mock_test_answer.zip" download>Code Snippets ZIP</a>
           <a href="./files/ITP4203_Mock_Test_Answer_and_Explanation.docx" download>Mock 解釋 Word</a>
           <a href="./view-file.html?file=./files/MOCK_TEST_CHEATSHEET.md&amp;name=MOCK_TEST_CHEATSHEET.md" target="_blank" rel="noreferrer">Cheatsheet 可讀版</a>
           <a href="./view-file.html?file=./files/mock_test_answer/README.md&amp;name=README.md" target="_blank" rel="noreferrer">README 可讀版</a>
