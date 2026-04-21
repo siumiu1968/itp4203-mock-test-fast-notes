@@ -24,6 +24,8 @@
       </p>
       <div class="hero-actions">
         <a class="button button-primary" href="#official-links">先睇官方網站</a>
+        <a class="button button-secondary" href="#exam-steps">Step-by-Step</a>
+        <a class="button button-secondary" href="#lab4-room-setup">Lab 4 Room API</a>
         <a class="button button-secondary" href="#copy-zone">直接 copy code</a>
       </div>
     </div>
@@ -43,8 +45,12 @@
   <main class="layout">
     <nav class="side-nav">
       <a href="#mapping">功能對照</a>
+      <a href="#exam-steps">考試流程</a>
       <a href="#official-links">官方網站</a>
+      <a href="#lab4-room-setup">Lab 4 Room API</a>
+      <a href="#trial-problems">實測問題</a>
       <a href="#copy-zone">Copy Zone</a>
+      <a href="#full-answer">完整答案</a>
       <a href="#local-files">遠端答案下載</a>
     </nav>
 
@@ -92,6 +98,252 @@
         </div>
       </section>
 
+      <section id="exam-steps" class="panel">
+        <div class="panel-head">
+          <h2>Step-by-Step：完成 Test 流程</h2>
+          <p>呢段只講考試落手順序。每一步分清楚：做咩、主力睇邊份 Lab、做完下一步去邊。</p>
+        </div>
+
+        <div class="callout-card">
+          <h3>先記住一條規則</h3>
+          <p><strong>Lab 1</strong>：XML 元件、`findViewById`、button click、讀 `EditText`、改 `ImageView`。</p>
+          <p><strong>Lab 2</strong>：Spinner、RecyclerView、item layout、Adapter、ViewHolder。</p>
+          <p><strong>Lab 3</strong>：Activity 跳頁、`Intent`、`putExtra` / `getStringExtra`、Details page、Activity Result / image picker 概念。</p>
+          <p><strong>Lab 4</strong>：只負責 Room database：Gradle/KSP、Entity、Dao、AppDatabase、insert/query。</p>
+          <p><strong>Lab 5</strong>：只有題目講 API / server / HTTP / GET / POST 先用。</p>
+          <p class="answer-line">記法：畫面=Lab 1/2/3，database=Lab 4，online API=Lab 5。</p>
+        </div>
+
+        <div class="exam-step-grid">
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">1</span>
+              <h3>開 Project，先 Run 一次空 app</h3>
+            </div>
+            <p><strong>做咩：</strong>Android Studio 開 `Empty Views Activity`，Language 揀 Kotlin，Package name 記低，Run 一次確認 project 冇問題。</p>
+            <p><strong>主力 Lab：</strong>Lab 1 / Lab 2 開 project 步驟。呢步唔需要 Lab 4。</p>
+            <p><strong>下一步：</strong>如果題目要 Room database，就加 Room / KSP。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">2</span>
+              <h3>加入 Room API / KSP</h3>
+            </div>
+            <p><strong>做咩：</strong>改 `libs.versions.toml`、project `build.gradle.kts`、app `build.gradle.kts`、`gradle.properties`，再 `Sync Now`。</p>
+            <p><strong>主力 Lab：</strong>Lab 4 Step 2-6。只有 Room 設定先開 Lab 4。</p>
+            <p><strong>直接 copy：</strong><a href="#lab4-room-setup">Lab 4 Room API 教程</a>。</p>
+            <p><strong>下一步：</strong>`@Entity`、`@Dao`、`RoomDatabase` 唔紅之後，寫三個 database Kotlin 檔。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">3</span>
+              <h3>寫 Room 三件套</h3>
+            </div>
+            <p><strong>做咩：</strong>建立 `Camera.kt`、`CameraDao.kt`、`AppDatabase.kt`。題目改名就把 `Camera` 改成 Product / Book / Student 等。</p>
+            <p><strong>主力 Lab：</strong>Lab 4 Step 8-11。`data class` 概念可回看 OOP Lab 4。</p>
+            <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 入面第 1-3 個檔案。</p>
+            <p><strong>下一步：</strong>畫 XML 版面，先確保 id 同 Kotlin 會用到嘅 id 一樣。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">4</span>
+              <h3>畫四個 XML</h3>
+            </div>
+            <p><strong>做咩：</strong>建立 `activity_main.xml`、`activity_insert.xml`、`activity_details.xml`、`item_camera.xml`。</p>
+            <p><strong>主力 Lab：</strong>Lab 1 負責 Button / EditText / ImageView；Lab 2 負責 RecyclerView / item row；Lab 3 負責 Details page。</p>
+            <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 入面第 8-11 個檔案。</p>
+            <p><strong>下一步：</strong>寫 `CameraAdapter.kt`，將 database list 顯示到 `RecyclerView`。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">5</span>
+              <h3>寫 RecyclerView Adapter</h3>
+            </div>
+            <p><strong>做咩：</strong>建立 `CameraAdapter.kt`，用 `item_camera.xml` 顯示每一行 camera name，按 item 時回傳被按中嗰筆資料。</p>
+            <p><strong>主力 Lab：</strong>Lab 2 part 2。Room list 只係資料來源，不係 Adapter 本身。</p>
+            <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 第 4 個檔案。</p>
+            <p><strong>下一步：</strong>寫 `MainActivity.kt`，把 Adapter 放上首頁。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">6</span>
+              <h3>寫 MainActivity：首頁 list + 跳頁</h3>
+            </div>
+            <p><strong>做咩：</strong>`RecyclerView` 顯示 `dao.getAllCameras()`；`+` button 開 Insert；按 item 用 Intent 傳 `camera_id` 去 Details。</p>
+            <p><strong>主力 Lab：</strong>Lab 2 負責 RecyclerView；Lab 3 負責 Intent；Lab 4 只負責 `dao.getAllCameras()`。</p>
+            <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 第 5 個檔案。</p>
+            <p><strong>下一步：</strong>寫 `InsertActivity.kt`，處理輸入、選圖、Save。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">7</span>
+              <h3>寫 InsertActivity：輸入 + 選圖 + Save</h3>
+            </div>
+            <p><strong>做咩：</strong>讀 `EditText`、開 image picker、預覽圖片、建立 `Camera` object、呼叫 `insertCamera()`。</p>
+            <p><strong>主力 Lab：</strong>Lab 1 負責輸入/button；Ch 3 負責 image picker；Lab 4 只負責 insert database。</p>
+            <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 第 6 個檔案。</p>
+            <p><strong>下一步：</strong>寫 `DetailsActivity.kt`，用 id 查返同一筆資料。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">8</span>
+              <h3>寫 DetailsActivity：收 id + 顯示資料</h3>
+            </div>
+            <p><strong>做咩：</strong>`getStringExtra("camera_id")` 收 id，`getCameraById(id)` 查 database，顯示 name / description / image。</p>
+            <p><strong>主力 Lab：</strong>Lab 3 負責 Details / Intent；Lab 4 只借 Dao query。</p>
+            <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 第 7 個檔案。</p>
+            <p><strong>下一步：</strong>確認 Manifest 有註冊 InsertActivity / DetailsActivity。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">9</span>
+              <h3>檢查 AndroidManifest</h3>
+            </div>
+            <p><strong>做咩：</strong>如果 Android Studio 無自動加 activity，就喺 `<code>&lt;application&gt;</code>` 入面加 `InsertActivity` 同 `DetailsActivity`。</p>
+            <p><strong>主力 Lab：</strong>Lab 3 建新 Activity / 跳頁。</p>
+            <p><strong>直接 copy：</strong><a href="#full-answer">完整答案直接睇</a> 第 12 個檔案。</p>
+            <p><strong>下一步：</strong>Run app，逐個功能測試。</p>
+          </article>
+
+          <article class="exam-step-card">
+            <div class="step-title">
+              <span class="step-badge">10</span>
+              <h3>最後測試流程</h3>
+            </div>
+            <p><strong>做咩：</strong>開 app -> 按 `+` -> 輸入 name / description -> Select Image -> Save -> 首頁見到新 item -> 按 item -> Details 見到同一筆資料 -> Back。</p>
+            <p><strong>出錯時：</strong>紅字先睇 import / package / XML id；crash 就睇 Logcat 第一個 `Caused by`。</p>
+            <p><strong>下一步：</strong>如果真正題目變種，先改 Entity 名同欄位，再照同一條流程做。</p>
+          </article>
+        </div>
+
+        <div class="panel-head sub-head">
+          <h3>Lab / PowerPoint Copy 對照表</h3>
+          <p>以下係我重新掃過各份 Lab 同課件後整理。考試時如果唔記得點寫，就按主題去指定 Lab Step 或 PPT Slide 搵。</p>
+        </div>
+
+        <div class="copy-map-grid">
+          <article class="copy-map-card">
+            <h3>開 Project / 基本 Activity</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 1 Part 1` Step 1、`Mobile Lab 1 Part 2` Step 1、`Mobile Lab 2 part 1` Step 1、`Mobile Lab 2 part 2` Step 1。Lab 4 Step 1 只係同一類開 project 流程，唔係必須。</p>
+            <p><strong>PPT 對應：</strong>`Mobile 1 - Basic UI and Event Handling` Slide 2 講 View / ViewGroup。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/studio/projects/create-project" target="_blank" rel="noreferrer">Create an Android project</a>。</p>
+            <p><strong>考試用途：</strong>如果要由零開 project，照 Lab 1 / Lab 2 的 Empty Views Activity 開法；Room 相關設定到下一步先開 Lab 4。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>XML Layout / TextView / Button / EditText / ImageView</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 1 Part 1` Step 3 寫 `strings.xml`，Step 5 `findViewById`，Step 6-8 `setOnClickListener`；`Mobile Lab 1 Part 2` Step 3-10 有 Button、ImageView、CheckBox、RadioGroup、EditText。</p>
+            <p><strong>PPT 對應：</strong>`Mobile 1` Slide 18-21 常用 XML attributes，Slide 24 `findViewById`，Slide 25 TextView，Slide 26 EditText，Slide 27-28 ImageView，Slide 29 Button。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/develop/ui/views/layout/declaring-layout" target="_blank" rel="noreferrer">Declare UI layouts</a>、<a href="https://developer.android.com/reference/android/widget/EditText" target="_blank" rel="noreferrer">EditText</a>、<a href="https://developer.android.com/reference/android/widget/ImageView" target="_blank" rel="noreferrer">ImageView</a>。</p>
+            <p><strong>考試用途：</strong>Insert page 要 `EditText`、`Button`、`ImageView`；Details page 要 `TextView`、`ImageView`、Back button。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Button Click / 讀輸入 / 顯示結果</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 1 Part 1` Step 6-8 有三粒 button click；`Mobile Lab 1 Part 2` Step 4-10 有 click 後讀 CheckBox / RadioButton / EditText 再顯示結果。</p>
+            <p><strong>PPT 對應：</strong>`Mobile 1` Slide 24 講 XML id 連去 Kotlin，Slide 29 講 `onClickListener`。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/develop/ui/views/components/button" target="_blank" rel="noreferrer">Buttons</a>。</p>
+            <p><strong>考試用途：</strong>`Save`、`Cancel`、`Back`、`Select Image` 全部都係同一個模式：`findViewById` 後 `setOnClickListener { ... }`。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Spinner / 選項清單</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 2 part 1` Step 2 寫 `string-array`，Step 4 XML 放 Spinner，Step 5 `findViewById`，Step 6-9 讀 `selectedItemPosition` 同 button click。</p>
+            <p><strong>PPT 對應：</strong>`Mobile 2 Spinner and RecyclerView` Slide 2-9，特別係 Slide 7-9 有 `ArrayAdapter.createFromResource` 同讀 spinner choice。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/develop/ui/views/components/spinner" target="_blank" rel="noreferrer">Spinners</a>。</p>
+            <p><strong>考試用途：</strong>如果真正 test 有 category / priority / type 下拉選單，就照 Lab 2 part 1 copy。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>RecyclerView / Adapter / ViewHolder</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 2 part 2` Step 4-5 建 `list_items.xml`，Step 8-16 建 ViewHolder / Adapter，Step 17 MainActivity set adapter；`Mobile Lab 4` Step 15、Step 17-21 係 Room list 版 Adapter。</p>
+            <p><strong>PPT 對應：</strong>`Mobile 2` Slide 10-16：RecyclerView 概念、Adapter、ViewHolder、`onCreateViewHolder`、`onBindViewHolder`。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/develop/ui/views/layout/recyclerview" target="_blank" rel="noreferrer">Create dynamic lists with RecyclerView</a>。</p>
+            <p><strong>考試用途：</strong>Start Page 要顯示 database list；直接用 mock answer `CameraAdapter.kt`，或者 Lab 4 Step 17-21 改名。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Intent / 跳頁 / 傳資料去 Details</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 3 part 1` Step 2 建 `DetailsActivity`，Step 4 用 `Intent` + `putExtra`，Step 5 `findViewById`，Step 6 `getStringExtra`，Step 7-9 顯示文字同圖片。</p>
+            <p><strong>PPT 對應：</strong>`Mobile Ch 3 - Intent and Fragment` Slide 3-6 講 Intent，Slide 5 有 explicit Intent、`startActivity`、pass data。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/guide/components/intents-filters" target="_blank" rel="noreferrer">Intents and Intent Filters</a>。</p>
+            <p><strong>考試用途：</strong>首頁按 item 去 Details page；用 `intent.putExtra("camera_id", camera.id)`，Details 用 `getStringExtra("camera_id")`。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Activity Result / Select Image</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Ch 3` Slide 7-10 講 Activity Result API；mock answer `InsertActivity.kt` 已經有 `registerForActivityResult(ActivityResultContracts.GetContent())`。</p>
+            <p><strong>Lab 對應：</strong>Lab 3 part 1 Step 8-9 教根據資料顯示對應圖片；mock test 選圖就用本網站 Copy Zone 的 InsertActivity。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/training/basics/intents/result" target="_blank" rel="noreferrer">Get a result from an activity</a>、<a href="https://developer.android.com/training/data-storage/shared/photopicker" target="_blank" rel="noreferrer">Photo Picker</a>。</p>
+            <p><strong>考試用途：</strong>Insert page 撳 `Select Image`，揀完要即刻 `imageView.setImageURI(uri)`，Save 時存 `uri.toString()`。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Room Gradle / KSP 設定</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 4` Step 2 `libs.versions.toml`，Step 3 Project `build.gradle.kts`，Step 4 Module plugin，Step 5 dependencies，Step 6 `gradle.properties`。</p>
+            <p><strong>PPT 對應：</strong>`Mobile Ch 4 - Data storage` Slide 15-16：Room runtime、compiler、KSP、libs.versions.toml。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/training/data-storage/room" target="_blank" rel="noreferrer">Room 官方教學</a>。</p>
+            <p><strong>考試用途：</strong>考試一開 project 要先做呢步，否則 `@Entity`、`@Dao`、`RoomDatabase` 會紅色。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Room Entity / Dao / Database</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 4` Step 8 建 `data` / `viewmodel` package，Step 9 `Task.kt`，Step 10 `TaskDao.kt`，Step 11 `AppDatabase.kt`。</p>
+            <p><strong>PPT 對應：</strong>`Mobile Ch 4` Slide 13-20，尤其 Slide 14 架構、Slide 17 Entity、Slide 18 Dao、Slide 19 Database。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/training/data-storage/room/defining-data" target="_blank" rel="noreferrer">Room entities</a>、<a href="https://developer.android.com/training/data-storage/room/accessing-data" target="_blank" rel="noreferrer">Room DAOs</a>。</p>
+            <p><strong>考試用途：</strong>把 Lab 4 的 `Task` 改成題目需要，例如 `Camera`；把 `task_table` 改成 `camera_table`。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Repository / ViewModel / observe list</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 4` Step 12 `TaskRepository`，Step 13 `TaskViewModel`，Step 22 ViewModel attribute，Step 24 observe list。</p>
+            <p><strong>PowerPoint 對應：</strong>`Mobile Ch 4` Slide 14 解釋 Room architecture；`Mobile Ch 5` Slide 6 提醒長時間工作唔好塞住 UI thread。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/topic/libraries/architecture/viewmodel" target="_blank" rel="noreferrer">ViewModel overview</a>。</p>
+            <p><strong>考試用途：</strong>如果老師要求 MVVM / LiveData，就用 Lab 4 Step 12-13；如果只求 mock 最短答案，可以用本網站 `allowMainThreadQueries()` 版本。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Room + RecyclerView 完整 CRUD</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 4` Step 14 `activity_main.xml`，Step 15 `task_item.xml`，Step 16 `dialog_add_task.xml`，Step 17-21 `TaskAdapter`，Step 24 set adapter，Step 25 add/update dialog，Step 26 FAB click。</p>
+            <p><strong>PPT 對應：</strong>`Mobile 2` Slide 10-16 RecyclerView；`Mobile Ch 4` Slide 13-20 Room。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/develop/ui/views/layout/recyclerview" target="_blank" rel="noreferrer">RecyclerView</a> + <a href="https://developer.android.com/training/data-storage/room" target="_blank" rel="noreferrer">Room</a>。</p>
+            <p><strong>考試用途：</strong>如果 test 要 add / update / delete，Lab 4 Step 24-26 係最接近；mock test 只需要 insert + list + details。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Fragments / Landscape 版面</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 3 part 2` Step 4-7 建 Fragment XML，Step 20-27 初始化同切 Fragment；`Mobile Lab 3 part 3` Step 1-6 做 landscape layout 同不同螢幕邏輯。</p>
+            <p><strong>PPT 對應：</strong>`Mobile Ch 3` Slide 11-18：Fragment lifecycle、FragmentManager、FragmentTransaction。</p>
+            <p><strong>官方網站：</strong><a href="https://developer.android.com/guide/fragments" target="_blank" rel="noreferrer">Fragments</a>。</p>
+            <p><strong>考試用途：</strong>如果題目無叫 Fragment，就唔好浪費時間；如果有平板 / landscape / master-detail，先用呢部分。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Networking / API / Retrofit</h3>
+            <p><strong>可 copy 位置：</strong>`Mobile Lab 5.docx` Step 2 dependencies，Step 5 `SimpleContact`，Step 6-9 `ContactViewModel` GET / POST / delete，Step 10-18 Adapter + MainActivity，Step 20-21 Manifest permission；`Mobile Lab 5(Retrofit)` Step 10 `ContactApiService`。</p>
+            <p><strong>PPT 對應：</strong>`Mobile Ch 5` Slide 6 threading，Slide 11 web service，Slide 13-14 RESTful API，Slide 19-21 fetch data process。</p>
+            <p><strong>官方網站：</strong><a href="https://square.github.io/retrofit/" target="_blank" rel="noreferrer">Retrofit</a>、<a href="https://developer.android.com/training/basics/network-ops/connecting" target="_blank" rel="noreferrer">Connect to the network</a>。</p>
+            <p><strong>考試用途：</strong>mock test 暫時唔似考 API；如果真正 test 突然有 online data，先開 Lab 5。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>Kotlin / OOP 基礎</h3>
+            <p><strong>可 copy 位置：</strong>`OOP Lab 1` 有 `fun main`、if/when、loop、array、function；`OOP Lab 2` 有 class / constructor / private property；`OOP Lab 3` 有 inheritance / `open` / override；`OOP Lab 4` 有 abstract class / interface / data class。</p>
+            <p><strong>PPT 對應：</strong>`OOP 1` Kotlin basic、`OOP-2` Encapsulation、`OOP 3` Inheritance、`OOP-4` Polymorphism。</p>
+            <p><strong>官方網站：</strong><a href="https://kotlinlang.org/docs/classes.html" target="_blank" rel="noreferrer">Kotlin Classes</a>、<a href="https://kotlinlang.org/docs/data-classes.html" target="_blank" rel="noreferrer">Kotlin Data Classes</a>。</p>
+            <p><strong>考試用途：</strong>Room `data class Camera(...)`、Adapter class、ViewModel class 全部都係 Kotlin class 概念。</p>
+          </article>
+        </div>
+      </section>
+
       <section id="official-links" class="panel">
         <div class="panel-head">
           <h2>官方網站快鏈</h2>
@@ -123,6 +375,17 @@
             <p>講 `@Entity`、`@Dao`、`@Database` 同點樣由 database 讀寫資料。mock test 最值分部分。</p>
             <p class="mini">建議直接搵 keyword：`@Entity`, `@Dao`, `databaseBuilder`, `insert`, `Query`。</p>
             <a href="https://developer.android.com/training/data-storage/room" target="_blank" rel="noreferrer">打開官方頁</a>
+          </article>
+
+          <article class="resource-card" data-tags="lab4 room api gradle ksp libs versions toml setup">
+            <div class="card-top">
+              <span class="tag">Lab 4</span>
+              <span class="tag soft">本網站整理</span>
+            </div>
+            <h3>Android Studio 加 Room API 設定</h3>
+            <p>對應 `Mobile Lab 4` Step 2 至 Step 6：`libs.versions.toml`、project Gradle、app Gradle、dependencies、gradle.properties。</p>
+            <p class="mini">建議直接搵 keyword：`libs.versions.toml`, `alias(libs.plugins.ksp)`, `implementation(libs.androidx.room.runtime)`。</p>
+            <a href="#lab4-room-setup">跳去 Room API 教程</a>
           </article>
 
           <article class="resource-card" data-tags="intent details activity startactivity putextra getstringextra navigation">
@@ -215,10 +478,407 @@
         </div>
       </section>
 
+      <section id="lab4-room-setup" class="panel">
+        <div class="panel-head">
+          <h2>Lab 4：Android Studio 加 Room API 教程</h2>
+          <p>呢段係根據 `Mobile Lab 4.docx` Step 2 至 Step 13 整理。考試如果要用 Room，先做 Gradle 設定，之後先寫 Entity、Dao、Database。</p>
+        </div>
+
+        <div class="callout-card">
+          <h3>核心理解</h3>
+          <p><strong>Room</strong> 即係 Android 入面一個「幫你管理 SQLite database 嘅助手」。你唔需要自己寫太多低層 SQL 開 database，主要寫三樣：`@Entity` = 一張表、`@Dao` = 查/加/改/刪方法、`@Database` = database 主入口。</p>
+          <p><strong>KSP</strong> 即係「幫 Room 自動生 code 嘅工具」。如果唔加 KSP，Android Studio 會唔識幫你把 `@Dao`、`@Database` 轉成真正可用嘅 database code。</p>
+        </div>
+
+        <div class="setup-steps">
+          <article class="setup-step">
+            <div class="step-title">
+              <span class="step-badge">Step 2</span>
+              <h3>開 `Gradle Scripts -> libs.versions.toml`</h3>
+            </div>
+            <p>用途：先定義 Room、SQLite、KSP 嘅版本同 library 名。之後其他 Gradle 檔就可以用 `libs.androidx.room.runtime` 呢啲短名。</p>
+            <div class="snippet-head">
+              <span class="mini">貼入對應 block，唔好重覆整多個 `[versions]`。</span>
+              <button class="copy-button" data-copy-target="code-lab4-versions">Copy</button>
+            </div>
+            <pre id="code-lab4-versions"><code>[versions]
+room = "2.8.4"
+sqlite = "2.6.2"
+ksp = "2.3.3"
+
+[libraries]
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+
+[plugins]
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }</code></pre>
+            <div class="explain-grid">
+              <p><code>room = "2.8.4"</code>：Room library 版本。</p>
+              <p><code>ksp = "2.3.3"</code>：KSP plugin 版本。</p>
+              <p><code>androidx-room-runtime</code>：app 執行時真正用 Room。</p>
+              <p><code>androidx-room-compiler</code>：KSP 用佢幫你生 database code。</p>
+            </div>
+          </article>
+
+          <article class="setup-step">
+            <div class="step-title">
+              <span class="step-badge">Step 3</span>
+              <h3>開 Project `build.gradle.kts`</h3>
+            </div>
+            <p>用途：喺成個 project 宣告「我呢個 project 有 KSP 呢個 plugin 可以用」。貼完按 `Sync Now`。</p>
+            <div class="snippet-head">
+              <span class="mini">位置：`plugins { ... }` 入面。</span>
+              <button class="copy-button" data-copy-target="code-lab4-project-gradle">Copy</button>
+            </div>
+            <pre id="code-lab4-project-gradle"><code>plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.ksp) apply false
+}</code></pre>
+            <p class="warning-note">如果你本身個 project 已經有其他 plugin，唔好刪走；只係加返 `alias(libs.plugins.ksp) apply false`。</p>
+          </article>
+
+          <article class="setup-step">
+            <div class="step-title">
+              <span class="step-badge">Step 4</span>
+              <h3>開 Module `build.gradle.kts (:app)`</h3>
+            </div>
+            <p>用途：真正喺 app module 啟用 KSP。冇呢句，Room annotation processor 唔會幫你做嘢。</p>
+            <div class="snippet-head">
+              <span class="mini">安全寫法：保留 Kotlin plugin，再加 KSP。</span>
+              <button class="copy-button" data-copy-target="code-lab4-app-plugins">Copy</button>
+            </div>
+            <pre id="code-lab4-app-plugins"><code>plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+}</code></pre>
+            <p class="warning-note">Lab 圖入面重點係加 `alias(libs.plugins.ksp)`。如果你刪走 `alias(libs.plugins.kotlin.android)`，Kotlin project 可能會 compile 唔到。</p>
+          </article>
+
+          <article class="setup-step">
+            <div class="step-title">
+              <span class="step-badge">Step 5</span>
+              <h3>同一個 `:app` 檔案入 dependencies</h3>
+            </div>
+            <p>用途：正式把 Room library 加入 app。`implementation` 係 app 用，`ksp` 係編譯時幫你生 code，`lifecycle-viewmodel-ktx` 係 Lab 4 後面 `TaskViewModel` 會用。</p>
+            <div class="snippet-head">
+              <span class="mini">位置：`dependencies { ... }` 入面。</span>
+              <button class="copy-button" data-copy-target="code-lab4-dependencies">Copy</button>
+            </div>
+            <pre id="code-lab4-dependencies"><code>dependencies {
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    annotationProcessor(libs.androidx.room.compiler)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
+}</code></pre>
+            <div class="explain-grid">
+              <p><code>implementation(...room.runtime)</code>：app 跑嘅時候要用 Room。</p>
+              <p><code>ksp(...room.compiler)</code>：編譯時幫你處理 `@Entity`、`@Dao`、`@Database`。</p>
+              <p><code>annotationProcessor(...)</code>：Lab 4 有叫你加；Kotlin 主要靠 KSP。</p>
+              <p><code>lifecycle-viewmodel-ktx</code>：令 `viewModelScope.launch` 呢類寫法可用。</p>
+            </div>
+          </article>
+
+          <article class="setup-step">
+            <div class="step-title">
+              <span class="step-badge">Step 6</span>
+              <h3>如果 AGP 9.0 或以上，開 `gradle.properties`</h3>
+            </div>
+            <p>用途：Lab 4 話如果 Android Gradle Plugin 比較新，可能要加呢句，避免某啲舊式 Kotlin sourceSets plugin 出問題。</p>
+            <div class="snippet-head">
+              <span class="mini">如果你 AGP 舊過 9.0，Lab 話可以唔做。</span>
+              <button class="copy-button" data-copy-target="code-lab4-gradle-properties">Copy</button>
+            </div>
+            <pre id="code-lab4-gradle-properties"><code>android.disallowKotlinSourceSets=false</code></pre>
+          </article>
+        </div>
+
+        <div class="callout-card">
+          <h3>做完 Gradle 後一定要做</h3>
+          <ol class="plain-list">
+            <li>撳 Android Studio 右上角 `Sync Now`。</li>
+            <li>等下面 Gradle sync 完，冇紅字先繼續。</li>
+            <li>如果 `@Entity`、`@Dao`、`RoomDatabase` 係紅色，多數係 dependencies 未 sync 或 import 未加。</li>
+            <li>如果 `ksp(...)` 紅色，多數係 Project Gradle 未加 `alias(libs.plugins.ksp) apply false`，或者 app plugin 未加 `alias(libs.plugins.ksp)`。</li>
+            <li>如果見到 `Inconsistent JVM Target Compatibility`，喺 Module `build.gradle.kts` 加下面 JVM 17 設定。</li>
+          </ol>
+        </div>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>Android Studio 2025.2 常見修正：JVM target mismatch</h3>
+            <button class="copy-button" data-copy-target="code-jvm-target-fix">Copy</button>
+          </div>
+          <p>如果 build error 寫 `compileDebugJavaWithJavac (1.8)` 同 `compileDebugKotlin (21)` 唔一致，就將呢段放入 `app/build.gradle.kts` 嘅 `android { ... }` 後面。</p>
+          <pre id="code-jvm-target-fix"><code>android {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}</code></pre>
+        </article>
+
+        <div class="panel-head sub-head">
+          <h3>Lab 4 Room 五個 Kotlin 檔案</h3>
+          <p>下面係 Step 9 至 Step 13 嘅慢速整理。你考試如果要由零起 Room，可以按呢個順序寫。</p>
+        </div>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>1. `Task.kt`：Entity，即係 database 入面一張表</h3>
+            <button class="copy-button" data-copy-target="code-lab4-task-entity">Copy</button>
+          </div>
+          <pre id="code-lab4-task-entity"><code>import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "task_table")
+data class Task(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val taskName: String,
+    val taskDescription: String,
+    val priority: Int
+)</code></pre>
+          <div class="explain-grid">
+            <p><code>@Entity(tableName = "task_table")</code>：叫 Room 建一張叫 `task_table` 嘅表。</p>
+            <p><code>data class Task</code>：一個 Task object 就係 database 入面一行資料。</p>
+            <p><code>@PrimaryKey(autoGenerate = true)</code>：每筆資料自動有唯一 id。</p>
+            <p><code>priority</code>：用數字表示高、中、低優先次序。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>2. `TaskDao.kt`：Dao，即係 database 操作遙控器</h3>
+            <button class="copy-button" data-copy-target="code-lab4-task-dao">Copy</button>
+          </div>
+          <pre id="code-lab4-task-dao"><code>import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface TaskDao {
+    @Query("SELECT * FROM task_table ORDER BY priority ASC")
+    fun getAllTasks(): Flow&lt;List&lt;Task&gt;&gt;
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTask(task: Task)
+
+    @Update
+    suspend fun updateTask(task: Task)
+
+    @Delete
+    suspend fun deleteTask(task: Task)
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>@Dao</code>：話俾 Room 知呢個 interface 係 database 操作清單。</p>
+            <p><code>@Query(...)</code>：用 SQL 讀資料，並按 priority 由細至大排序。</p>
+            <p><code>Flow&lt;List&lt;Task&gt;&gt;</code>：資料有變時，畫面可以自動收到新 list。</p>
+            <p><code>suspend</code>：database 操作可以放入 coroutine，避免阻塞畫面。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>3. `AppDatabase.kt`：Database 主入口</h3>
+            <button class="copy-button" data-copy-target="code-lab4-appdatabase">Copy</button>
+          </div>
+          <pre id="code-lab4-appdatabase"><code>import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+
+@Database(entities = [Task::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun taskDao(): TaskDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "task_database"
+                ).build()
+
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>@Database(...)</code>：話俾 Room 呢個 database 有邊啲表。</p>
+            <p><code>abstract fun taskDao()</code>：提供一個方法拎 `TaskDao`。</p>
+            <p><code>@Volatile</code>：確保多條 thread 都睇到同一個 INSTANCE。</p>
+            <p><code>Room.databaseBuilder(...)</code>：真正建立 `task_database` 呢個 database。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>4. `TaskRepository.kt`：Repository，中間人</h3>
+            <button class="copy-button" data-copy-target="code-lab4-repository">Copy</button>
+          </div>
+          <pre id="code-lab4-repository"><code>import kotlinx.coroutines.flow.Flow
+
+class TaskRepository(private val taskDao: TaskDao) {
+    val allTasks: Flow&lt;List&lt;Task&gt;&gt; = taskDao.getAllTasks()
+
+    suspend fun insert(task: Task) {
+        taskDao.insertTask(task)
+    }
+
+    suspend fun update(task: Task) {
+        taskDao.updateTask(task)
+    }
+
+    suspend fun delete(task: Task) {
+        taskDao.deleteTask(task)
+    }
+}</code></pre>
+          <p class="mini">簡單理解：Activity 唔直接搵 Dao，而係經 Repository。Repository 好似中間人，幫你轉交 insert / update / delete。</p>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>5. `TaskViewModel.kt`：ViewModel，畫面同 database 中間層</h3>
+            <button class="copy-button" data-copy-target="code-lab4-viewmodel">Copy</button>
+          </div>
+          <pre id="code-lab4-viewmodel"><code>import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
+class TaskViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: TaskRepository
+    val allTasks: LiveData&lt;List&lt;Task&gt;&gt;
+
+    init {
+        val taskDao = AppDatabase.getDatabase(application).taskDao()
+        repository = TaskRepository(taskDao)
+        allTasks = repository.allTasks.asLiveData()
+    }
+
+    fun insert(task: Task) = viewModelScope.launch {
+        repository.insert(task)
+    }
+
+    fun update(task: Task) = viewModelScope.launch {
+        repository.update(task)
+    }
+
+    fun delete(task: Task) = viewModelScope.launch {
+        repository.delete(task)
+    }
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>AndroidViewModel(application)</code>：ViewModel 需要 application context 去開 database。</p>
+            <p><code>allTasks.asLiveData()</code>：把 Flow 轉成 Activity 容易 observe 嘅 LiveData。</p>
+            <p><code>viewModelScope.launch</code>：開 coroutine 執行 database 操作。</p>
+            <p><code>insert/update/delete</code>：Activity 撳掣時呼叫呢三個方法。</p>
+          </div>
+        </article>
+
+        <div class="callout-card">
+          <h3>如果考試題目唔係 Task，而係 Camera 點改？</h3>
+          <p>照同一條公式改名：`Task` 改做 `Camera`，`task_table` 改做 `camera_table`，`taskDao()` 改做 `cameraDao()`，database 名改做題目要求，例如 `camera_database`。</p>
+          <p class="answer-line">公式：`Entity = 表`、`Dao = 方法`、`Database = 主入口`、`Repository/ViewModel = 幫畫面安全呼叫 database`。</p>
+        </div>
+      </section>
+
+      <section id="trial-problems" class="panel">
+        <div class="panel-head">
+          <h2>實測發現：最容易卡住嘅位</h2>
+          <p>我用 Android Studio 2025.2 / Kotlin / Room 實際 build 同 emulator 跑過一次，下面係真實遇到或確認過嘅問題。</p>
+        </div>
+
+        <div class="copy-map-grid">
+          <article class="copy-map-card">
+            <h3>1. Project 放外置碟可能會 build fail</h3>
+            <p><strong>錯誤樣：</strong>`._layout is not a directory`、或者 resource parser 指住 `._xxx` 檔案。</p>
+            <p><strong>原因：</strong>macOS 喺某啲外置碟格式會自動產生 AppleDouble 檔案，例如 `._layout`、`._activity_main.xml`。Android resource parser 會當佢係壞 resource。</p>
+            <p><strong>即時做法：</strong>考試時把 project 放喺 `Desktop` / `Documents` / Android Studio 預設內置硬碟位置，唔好喺 USB / 外置 SSD 入面 build。</p>
+            <p class="answer-line">如果已經中咗：關 Android Studio，刪走所有 `._*` 檔，最好搬 project 去內置硬碟再 Sync / Run。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>2. Kotlin / Java JVM target 唔一致</h3>
+            <p><strong>錯誤樣：</strong>`Inconsistent JVM-target compatibility detected for tasks compileDebugJavaWithJavac (1.8) and compileDebugKotlin (21)`。</p>
+            <p><strong>原因：</strong>Android Studio 2025.2 / Kotlin 2.2 可能用較新 JVM target，但 Android Java compile option 仍係舊設定。</p>
+            <p><strong>即時做法：</strong>去 <a href="#code-jvm-target-fix">JVM target mismatch 修正</a> copy JVM 17 設定，放入 `app/build.gradle.kts`。</p>
+            <p class="answer-line">加完要 `Sync Now`，再 Run。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>3. Save 按鈕好似冇反應</h3>
+            <p><strong>現象：</strong>輸入 Name / Description 後按 Save，畫面仍停喺 Insert page。</p>
+            <p><strong>原因：</strong>多數係 keyboard / EditText focus 仍然食緊第一下操作，特別係 emulator 或細螢幕。</p>
+            <p><strong>即時做法：</strong>先按一次 Back 收起 keyboard，再按 Save；或者點畫面空白位後再 Save。</p>
+            <p class="answer-line">我實測：收 keyboard 後再按 Save，Room insert 成功，首頁即時顯示新資料。</p>
+          </article>
+
+          <article class="copy-map-card">
+            <h3>4. Select Image 會開系統 picker，冇圖都算成功一半</h3>
+            <p><strong>現象：</strong>按 Select Image 後打開 `Recent images` / `Photos` / `Drive` picker，但 emulator 可能顯示 `No items`。</p>
+            <p><strong>原因：</strong>模擬器入面未必有圖片。考試機有圖片就可以揀；冇圖片時至少證明 picker 開到。</p>
+            <p><strong>即時做法：</strong>如果時間唔夠，可以先確保 Name 可以 Save；有圖先測 image preview。</p>
+            <p class="answer-line">評分重點通常係有 Select Image button、能開 picker、揀到後能 `setImageURI`。</p>
+          </article>
+        </div>
+      </section>
+
       <section id="copy-zone" class="panel">
         <div class="panel-head">
           <h2>Copy Zone</h2>
-          <p>下面係最短、最貼 mock test 嘅可 copy 片段。每段都係照你份題目去寫。</p>
+          <p>下面每段都寫明：貼去邊個檔案、貼喺邊個位置、需要邊啲 XML id，同埋 code 大概做咩。唔好由上到下亂貼，按檔案逐個做。</p>
+        </div>
+
+        <div class="callout-card">
+          <h3>Copy Zone 使用方法</h3>
+          <ol class="plain-list">
+            <li>先完成 `Lab 4 Room API` 入面 Gradle / KSP 設定，確保 `RoomDatabase`、`@Entity`、`@Dao` 唔紅。</li>
+            <li>先寫三個 Room 檔案：`Camera.kt`、`CameraDao.kt`、`AppDatabase.kt`。</li>
+            <li>再寫 layout XML，確保 id 同 code 入面一樣，例如 `recyclerView`、`fabInsert`、`etName`、`btnSave`。</li>
+            <li>最後先寫 Activity：`MainActivity.kt`、`InsertActivity.kt`、`DetailsActivity.kt`。</li>
+            <li>如果想最快，去 <a href="#full-answer">完整答案直接睇</a> 逐個檔案 copy；Copy Zone 主要係俾你知道每段應該放邊。</li>
+          </ol>
+        </div>
+
+        <div class="copy-order-grid">
+          <article class="copy-order-card">
+            <strong>1. Room 資料層</strong>
+            <span>`Camera.kt` -> `CameraDao.kt` -> `AppDatabase.kt`</span>
+          </article>
+          <article class="copy-order-card">
+            <strong>2. XML 畫面層</strong>
+            <span>`activity_main.xml` -> `activity_insert.xml` -> `activity_details.xml` -> `item_camera.xml`</span>
+          </article>
+          <article class="copy-order-card">
+            <strong>3. RecyclerView</strong>
+            <span>`CameraAdapter.kt`，要配合 `item_camera.xml` 入面嘅 `tvName`</span>
+          </article>
+          <article class="copy-order-card">
+            <strong>4. Activity 功能層</strong>
+            <span>`MainActivity.kt` -> `InsertActivity.kt` -> `DetailsActivity.kt`</span>
+          </article>
         </div>
 
         <article class="snippet-card">
@@ -226,7 +886,9 @@
             <h3>Room：Camera Entity</h3>
             <button class="copy-button" data-copy-target="code-camera">Copy</button>
           </div>
-          <p>用途：定義一筆 camera 資料長相，對應 `camera_table`。</p>
+          <p><strong>貼去邊個檔案：</strong>`app/src/main/java/你的package/Camera.kt`。如果冇呢個檔案，就右擊 package，New Kotlin Class/File，叫 `Camera`。</p>
+          <p><strong>貼喺邊個位置：</strong>整個檔案內容。檔案最上面要有自己 package，例如 `package com.example.mockcameraapp`。</p>
+          <p><strong>用途：</strong>定義一筆 camera 資料長相，對應 Room 入面 `camera_table` 一張表。</p>
           <pre id="code-camera"><code>@Entity(tableName = "camera_table")
 data class Camera(
     @PrimaryKey
@@ -235,6 +897,12 @@ data class Camera(
     val descriptions: String,
     val imagePath: String
 )</code></pre>
+          <div class="explain-grid">
+            <p><code>@Entity(tableName = "camera_table")</code>：叫 Room 建一張 database table。</p>
+            <p><code>@PrimaryKey</code>：`id` 係每筆資料嘅唯一編號。</p>
+            <p><code>UUID.randomUUID().toString()</code>：自動生一個唔重複嘅 id。</p>
+            <p><code>name / descriptions / imagePath</code>：分別存相機名、描述、圖片 URI 字串。</p>
+          </div>
         </article>
 
         <article class="snippet-card">
@@ -242,7 +910,9 @@ data class Camera(
             <h3>Room：CameraDao</h3>
             <button class="copy-button" data-copy-target="code-dao">Copy</button>
           </div>
-          <p>用途：首頁查全部、詳細頁查單一資料、Insert page 做 insert。</p>
+          <p><strong>貼去邊個檔案：</strong>`CameraDao.kt`，同 `Camera.kt` 放同一個 package。</p>
+          <p><strong>貼喺邊個位置：</strong>整個檔案內容。需要 import：`Dao`、`Insert`、`Query`。</p>
+          <p><strong>用途：</strong>Dao 係 Room database 嘅操作清單；首頁查全部、詳細頁查單一資料、Insert page 做 insert。</p>
           <pre id="code-dao"><code>@Dao
 interface CameraDao {
     @Query("SELECT * FROM camera_table")
@@ -254,6 +924,12 @@ interface CameraDao {
     @Insert
     fun insertCamera(camera: Camera)
 }</code></pre>
+          <div class="explain-grid">
+            <p><code>@Query("SELECT * FROM camera_table")</code>：讀出所有 camera，俾首頁 list 用。</p>
+            <p><code>getCameraById(id)</code>：用 id 查一筆資料，俾 Details page 用。</p>
+            <p><code>@Insert</code>：新增一筆 camera，俾 Save button 用。</p>
+            <p><code>Camera?</code>：可能搵唔到資料，所以回傳值可以係 null。</p>
+          </div>
         </article>
 
         <article class="snippet-card">
@@ -261,7 +937,9 @@ interface CameraDao {
             <h3>Room：AppDatabase</h3>
             <button class="copy-button" data-copy-target="code-db">Copy</button>
           </div>
-          <p>用途：題目指定 database 名係 `camera_database`，呢段就係個主盒。</p>
+          <p><strong>貼去邊個檔案：</strong>`AppDatabase.kt`，同 `Camera.kt`、`CameraDao.kt` 放同一個 package。</p>
+          <p><strong>貼喺邊個位置：</strong>整個檔案內容。需要 import：`Context`、`Database`、`Room`、`RoomDatabase`。</p>
+          <p><strong>用途：</strong>呢個係 Room database 主入口。題目如果指定 database 名係 `camera_database`，就一定要用呢個字。</p>
           <pre id="code-db"><code>@Database(entities = [Camera::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cameraDao(): CameraDao
@@ -286,6 +964,12 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }</code></pre>
+          <div class="explain-grid">
+            <p><code>@Database(entities = [Camera::class])</code>：話俾 Room 知 database 入面有 Camera 呢張表。</p>
+            <p><code>abstract fun cameraDao()</code>：俾 Activity 拎 Dao 去查/加資料。</p>
+            <p><code>INSTANCE</code>：避免每次都開新 database，只用同一個 database。</p>
+            <p><code>allowMainThreadQueries()</code>：考試最短寫法；正式 app 唔建議，但 mock test 快速可用。</p>
+          </div>
         </article>
 
         <article class="snippet-card">
@@ -293,7 +977,10 @@ abstract class AppDatabase : RoomDatabase() {
             <h3>MainActivity：首頁 list + item click</h3>
             <button class="copy-button" data-copy-target="code-main">Copy</button>
           </div>
-          <p>用途：首頁顯示 list，按 `+` 去 Insert，按 item 去 Details。</p>
+          <p><strong>貼去邊個檔案：</strong>`MainActivity.kt`。</p>
+          <p><strong>貼喺邊個位置：</strong>`db = ...` 到 `recyclerView.adapter = adapter` 放入 `onCreate()` 入面，並且要放喺 `setContentView(...)` 之後。`override fun onResume()` 要放喺 class 入面，但唔好放喺 `onCreate()` 裏面。</p>
+          <p><strong>需要 XML id：</strong>`activity_main.xml` 要有 `RecyclerView` id=`recyclerView`，同 `FloatingActionButton` id=`fabInsert`。</p>
+          <p><strong>用途：</strong>首頁顯示 list，按 `+` 去 Insert，按 item 去 Details。</p>
           <pre id="code-main"><code>db = AppDatabase.getDatabase(this)
 recyclerView = findViewById(R.id.recyclerView)
 fabInsert = findViewById(R.id.fabInsert)
@@ -312,6 +999,14 @@ override fun onResume() {
     val cameraList = db.cameraDao().getAllCameras()
     adapter.updateData(cameraList)
 }</code></pre>
+          <div class="explain-grid">
+            <p><code>AppDatabase.getDatabase(this)</code>：開 Room database。</p>
+            <p><code>findViewById(...)</code>：將 XML 元件連去 Kotlin 變數。</p>
+            <p><code>CameraAdapter(emptyList()) { camera -> ... }</code>：建立 list adapter；按某一行時會執行 `{ ... }`。</p>
+            <p><code>intent.putExtra("camera_id", camera.id)</code>：把被按中嗰筆 camera id 傳去 Details page。</p>
+            <p><code>onResume()</code>：每次返首頁都重新讀 Room，確保新 Save 嘅資料會出現。</p>
+            <p><code>adapter.updateData(cameraList)</code>：把 database list 顯示到 RecyclerView。</p>
+          </div>
         </article>
 
         <article class="snippet-card">
@@ -319,7 +1014,10 @@ override fun onResume() {
             <h3>InsertActivity：Select Image + Save</h3>
             <button class="copy-button" data-copy-target="code-insert">Copy</button>
           </div>
-          <p>用途：最值分位。呢段處理選圖、預覽、save 入 Room。</p>
+          <p><strong>貼去邊個檔案：</strong>`InsertActivity.kt`。</p>
+          <p><strong>貼喺邊個位置：</strong>`private var selectedImageUri` 同 `private val imagePicker` 要放喺 class 入面、`onCreate()` 外面。`btnSelectImage.setOnClickListener` 同 `btnSave.setOnClickListener` 放入 `onCreate()`，並且要放喺 `findViewById` 之後。</p>
+          <p><strong>需要 XML id：</strong>`activity_insert.xml` 要有 `etName`、`etDescription`、`imageView`、`btnSelectImage`、`btnSave`。如果有 Cancel，就另外加 `btnCancel.setOnClickListener { finish() }`。</p>
+          <p><strong>用途：</strong>最值分位。呢段處理選圖、預覽、save 入 Room。</p>
           <pre id="code-insert"><code>private var selectedImageUri: Uri? = null
 
 private val imagePicker =
@@ -350,6 +1048,14 @@ btnSave.setOnClickListener {
     db.cameraDao().insertCamera(camera)
     finish()
 }</code></pre>
+          <div class="explain-grid">
+            <p><code>selectedImageUri</code>：暫時記住你揀咗邊張圖。</p>
+            <p><code>registerForActivityResult(GetContent())</code>：開 Android 系統檔案/圖片 picker。</p>
+            <p><code>imagePicker.launch("image/*")</code>：只揀圖片類型。</p>
+            <p><code>etName.text.toString().trim()</code>：讀使用者輸入嘅 camera name。</p>
+            <p><code>if (name.isEmpty()) return</code>：冇名就唔 save，避免空資料。</p>
+            <p><code>db.cameraDao().insertCamera(camera)</code>：真正寫入 Room database。</p>
+          </div>
         </article>
 
         <article class="snippet-card">
@@ -357,7 +1063,10 @@ btnSave.setOnClickListener {
             <h3>DetailsActivity：收 id + 顯示資料</h3>
             <button class="copy-button" data-copy-target="code-details">Copy</button>
           </div>
-          <p>用途：詳細頁讀返同一筆資料，再顯示圖、名、描述。</p>
+          <p><strong>貼去邊個檔案：</strong>`DetailsActivity.kt`。</p>
+          <p><strong>貼喺邊個位置：</strong>`val cameraId = ...` 到顯示圖片嗰段放入 `onCreate()`，而且要放喺 `db = ...` 同 `findViewById` 之後。`btnBack.setOnClickListener` 亦放入 `onCreate()`。</p>
+          <p><strong>需要 XML id：</strong>`activity_details.xml` 要有 `imageView`、`tvTitle`、`tvDescription`、`btnBack`。</p>
+          <p><strong>用途：</strong>詳細頁讀返首頁按中嗰一筆資料，再顯示圖、名、描述。</p>
           <pre id="code-details"><code>val cameraId = intent.getStringExtra("camera_id")
 if (cameraId != null) {
     val camera = db.cameraDao().getCameraById(cameraId) ?: return
@@ -372,6 +1081,702 @@ if (cameraId != null) {
 btnBack.setOnClickListener {
     finish()
 }</code></pre>
+          <div class="explain-grid">
+            <p><code>intent.getStringExtra("camera_id")</code>：收 MainActivity 傳過嚟嘅 camera id。</p>
+            <p><code>getCameraById(cameraId)</code>：用 id 去 Room 查同一筆資料。</p>
+            <p><code>tvTitle.text = camera.name</code>：把 camera name 顯示出嚟。</p>
+            <p><code>Uri.parse(camera.imagePath)</code>：把之前存嘅圖片 URI 字串轉返做 Uri。</p>
+            <p><code>imageView.setImageURI(...)</code>：顯示圖片。</p>
+            <p><code>finish()</code>：關閉 DetailsActivity，返上一頁。</p>
+          </div>
+        </article>
+      </section>
+
+      <section id="full-answer" class="panel">
+        <div class="panel-head">
+          <h2>完整答案直接睇</h2>
+          <p>呢度唔使下載檔案，直接喺網頁 copy。每個檔案都寫明貼去邊度、用途、同埋幾句重點解釋。</p>
+        </div>
+
+        <div class="callout-card">
+          <h3>貼 code 前先做呢三件事</h3>
+          <ol class="plain-list">
+            <li>先將所有 `package com.example.mocktestanswer` 改成你自己 Android Studio project 最上面嗰個 package name。</li>
+            <li>如果題目唔係 Camera app，就要將 `Camera`、`camera_table`、`camera_database`、欄位名改成題目真正要求。</li>
+            <li>XML id 一定要同 Kotlin `findViewById(R.id.xxx)` 一樣，否則會紅字或者 crash。</li>
+          </ol>
+        </div>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>1. `Camera.kt`：Room Entity</h3>
+            <button class="copy-button" data-copy-target="full-camera">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/java/你的package/Camera.kt`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>定義 database 入面一筆 camera 資料；一個 `Camera` object 就係 table 入面一行。</p>
+          <pre id="full-camera"><code>package com.example.mocktestanswer
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.util.UUID
+
+@Entity(tableName = "camera_table")
+data class Camera(
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
+    val name: String,
+    val descriptions: String,
+    val imagePath: String
+)</code></pre>
+          <div class="explain-grid">
+            <p><code>@Entity(tableName = "camera_table")</code>：叫 Room 建一張叫 `camera_table` 嘅表。</p>
+            <p><code>@PrimaryKey</code>：`id` 係每筆資料嘅唯一 key。</p>
+            <p><code>UUID.randomUUID().toString()</code>：自動產生唔重複 id，用 String 避免 TypeConverter。</p>
+            <p><code>imagePath</code>：存圖片 URI 字串，Details page 再轉返做 `Uri` 顯示。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>2. `CameraDao.kt`：Room 查詢同新增方法</h3>
+            <button class="copy-button" data-copy-target="full-dao">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/java/你的package/CameraDao.kt`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>首頁查全部、Details 查一筆、Insert 新增一筆，全部經 Dao 做。</p>
+          <pre id="full-dao"><code>package com.example.mocktestanswer
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+
+@Dao
+interface CameraDao {
+
+    // Read all camera records for the start page.
+    @Query("SELECT * FROM camera_table")
+    fun getAllCameras(): List&lt;Camera&gt;
+
+    // Read one camera record for the details page.
+    @Query("SELECT * FROM camera_table WHERE id = :id LIMIT 1")
+    fun getCameraById(id: String): Camera?
+
+    // Insert one new camera record.
+    @Insert
+    fun insertCamera(camera: Camera)
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>getAllCameras()</code>：首頁 `RecyclerView` 要用嘅全部資料。</p>
+            <p><code>getCameraById(id)</code>：Details page 收到 id 後查同一筆資料。</p>
+            <p><code>Camera?</code>：如果 id 搵唔到，可能回傳 null。</p>
+            <p><code>insertCamera(camera)</code>：Save button 呼叫，新增資料入 Room。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>3. `AppDatabase.kt`：Room database 主入口</h3>
+            <button class="copy-button" data-copy-target="full-db">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/java/你的package/AppDatabase.kt`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>建立 `camera_database`，俾 Activity 用 `cameraDao()` 查資料或 insert。</p>
+          <pre id="full-db"><code>package com.example.mocktestanswer
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+
+@Database(entities = [Camera::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun cameraDao(): CameraDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        // Create or return the single Room database instance.
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "camera_database"
+                )
+                    .allowMainThreadQueries()
+                    .build()
+
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>@Database(entities = [Camera::class])</code>：呢個 database 有 Camera 呢張表。</p>
+            <p><code>Room.databaseBuilder(...)</code>：真正建立 database。</p>
+            <p><code>INSTANCE</code>：全 app 共用同一個 database object。</p>
+            <p><code>allowMainThreadQueries()</code>：考試簡化版；正式 app 通常用 coroutine / ViewModel。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>4. `CameraAdapter.kt`：RecyclerView 每一行點顯示</h3>
+            <button class="copy-button" data-copy-target="full-adapter">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/java/你的package/CameraAdapter.kt`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>把 `List&lt;Camera&gt;` 顯示成一行行文字；撳一行就通知 `MainActivity` 開 Details。</p>
+          <pre id="full-adapter"><code>package com.example.mocktestanswer
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+
+class CameraAdapter(
+    private var cameraList: List&lt;Camera&gt;,
+    private val onItemClick: (Camera) -&gt; Unit
+) : RecyclerView.Adapter&lt;CameraAdapter.CameraViewHolder&gt;() {
+
+    class CameraViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvName: TextView = itemView.findViewById(R.id.tvName)
+    }
+
+    // Create one row view for the RecyclerView list.
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CameraViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_camera, parent, false)
+        return CameraViewHolder(view)
+    }
+
+    // Bind one camera name into one list row.
+    override fun onBindViewHolder(holder: CameraViewHolder, position: Int) {
+        val item = cameraList[position]
+        holder.tvName.text = item.name
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
+    }
+
+    // Tell RecyclerView the total number of rows.
+    override fun getItemCount(): Int = cameraList.size
+
+    // Refresh the list after data is changed.
+    fun updateData(newList: List&lt;Camera&gt;) {
+        cameraList = newList
+        notifyDataSetChanged()
+    }
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>CameraViewHolder</code>：代表 RecyclerView 入面一行 item。</p>
+            <p><code>inflate(R.layout.item_camera)</code>：用 `item_camera.xml` 畫每一行。</p>
+            <p><code>holder.tvName.text = item.name</code>：每行顯示 camera name。</p>
+            <p><code>onItemClick(item)</code>：撳 item 後交返俾 MainActivity 處理跳頁。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>5. `MainActivity.kt`：Start Page</h3>
+            <button class="copy-button" data-copy-target="full-main">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/java/你的package/MainActivity.kt`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>首頁顯示 Room 入面所有 camera；按 `+` 去 Insert；按 item 去 Details。</p>
+          <pre id="full-main"><code>package com.example.mocktestanswer
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var db: AppDatabase
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: CameraAdapter
+    private lateinit var fabInsert: FloatingActionButton
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        db = AppDatabase.getDatabase(this)
+
+        recyclerView = findViewById(R.id.recyclerView)
+        fabInsert = findViewById(R.id.fabInsert)
+
+        adapter = CameraAdapter(emptyList()) { camera -&gt;
+            val intent = Intent(this, DetailsActivity::class.java)
+            intent.putExtra("camera_id", camera.id)
+            startActivity(intent)
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        fabInsert.setOnClickListener {
+            startActivity(Intent(this, InsertActivity::class.java))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadCameraList()
+    }
+
+    // Load all data from Room and refresh the start page.
+    private fun loadCameraList() {
+        val cameraList = db.cameraDao().getAllCameras()
+        adapter.updateData(cameraList)
+    }
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>setContentView(R.layout.activity_main)</code>：使用首頁 XML。</p>
+            <p><code>LinearLayoutManager(this)</code>：RecyclerView 直向一行行顯示。</p>
+            <p><code>putExtra("camera_id", camera.id)</code>：把按中嗰筆 id 傳去 Details。</p>
+            <p><code>onResume()</code>：由 Insert 返回首頁時重新讀 database，令新資料即時出現。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>6. `InsertActivity.kt`：Insert Page</h3>
+            <button class="copy-button" data-copy-target="full-insert">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/java/你的package/InsertActivity.kt`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>輸入 camera name / description、揀圖預覽、按 Save 寫入 Room。</p>
+          <pre id="full-insert"><code>package com.example.mocktestanswer
+
+import android.net.Uri
+import android.os.Bundle
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
+
+class InsertActivity : AppCompatActivity() {
+
+    private lateinit var db: AppDatabase
+    private lateinit var etName: EditText
+    private lateinit var etDescription: EditText
+    private lateinit var imageView: ImageView
+    private lateinit var btnSelectImage: MaterialButton
+    private lateinit var btnCancel: MaterialButton
+    private lateinit var btnSave: MaterialButton
+    private var selectedImageUri: Uri? = null
+
+    // Open the system image picker and preview the selected image.
+    private val imagePicker =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri -&gt;
+            if (uri != null) {
+                selectedImageUri = uri
+                imageView.setImageURI(uri)
+                imageView.visibility = ImageView.VISIBLE
+            }
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_insert)
+
+        db = AppDatabase.getDatabase(this)
+
+        etName = findViewById(R.id.etName)
+        etDescription = findViewById(R.id.etDescription)
+        imageView = findViewById(R.id.imageView)
+        btnSelectImage = findViewById(R.id.btnSelectImage)
+        btnCancel = findViewById(R.id.btnCancel)
+        btnSave = findViewById(R.id.btnSave)
+
+        btnSelectImage.setOnClickListener {
+            imagePicker.launch("image/*")
+        }
+
+        btnCancel.setOnClickListener {
+            finish()
+        }
+
+        btnSave.setOnClickListener {
+            saveCamera()
+        }
+    }
+
+    // Save a new camera record and return to the start page.
+    private fun saveCamera() {
+        val name = etName.text.toString().trim()
+        val description = etDescription.text.toString().trim()
+
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Please enter camera name", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val camera = Camera(
+            name = name,
+            descriptions = description,
+            imagePath = selectedImageUri?.toString() ?: ""
+        )
+
+        db.cameraDao().insertCamera(camera)
+        finish()
+    }
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>ActivityResultContracts.GetContent()</code>：叫 Android 開系統選圖器。</p>
+            <p><code>selectedImageUri?.toString() ?: ""</code>：有圖就存 URI，冇圖就存空字串。</p>
+            <p><code>Toast.makeText(...)</code>：Name 空白時提示使用者。</p>
+            <p><code>finish()</code>：Save 完關閉 Insert page，回到首頁。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>7. `DetailsActivity.kt`：Details Page</h3>
+            <button class="copy-button" data-copy-target="full-details">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/java/你的package/DetailsActivity.kt`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>收 `camera_id`，查返同一筆 Room 資料，顯示圖片、標題、描述。</p>
+          <pre id="full-details"><code>package com.example.mocktestanswer
+
+import android.net.Uri
+import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
+
+class DetailsActivity : AppCompatActivity() {
+
+    private lateinit var db: AppDatabase
+    private lateinit var imageView: ImageView
+    private lateinit var tvTitle: TextView
+    private lateinit var tvDescription: TextView
+    private lateinit var btnBack: MaterialButton
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_details)
+
+        db = AppDatabase.getDatabase(this)
+
+        imageView = findViewById(R.id.imageView)
+        tvTitle = findViewById(R.id.tvTitle)
+        tvDescription = findViewById(R.id.tvDescription)
+        btnBack = findViewById(R.id.btnBack)
+
+        val cameraId = intent.getStringExtra("camera_id")
+        if (cameraId != null) {
+            bindCamera(cameraId)
+        }
+
+        btnBack.setOnClickListener {
+            finish()
+        }
+    }
+
+    // Load one camera record and show it on the details page.
+    private fun bindCamera(cameraId: String) {
+        val camera = db.cameraDao().getCameraById(cameraId) ?: return
+
+        tvTitle.text = camera.name
+        tvDescription.text = "Description: ${camera.descriptions}"
+
+        if (camera.imagePath.isNotEmpty()) {
+            imageView.setImageURI(Uri.parse(camera.imagePath))
+        }
+    }
+}</code></pre>
+          <div class="explain-grid">
+            <p><code>intent.getStringExtra("camera_id")</code>：收 MainActivity 傳過嚟嘅 id。</p>
+            <p><code>bindCamera(cameraId)</code>：集中處理查資料同顯示畫面。</p>
+            <p><code>getCameraById(cameraId)</code>：只查按中嗰一筆 camera。</p>
+            <p><code>Uri.parse(camera.imagePath)</code>：將 URI 字串轉返成圖片 URI。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>8. `activity_main.xml`：首頁版面</h3>
+            <button class="copy-button" data-copy-target="full-xml-main">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/res/layout/activity_main.xml`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>放一個 `RecyclerView` 顯示 list，加一粒右下角 `FloatingActionButton` 去 Insert page。</p>
+          <pre id="full-xml-main"><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF8FD"&gt;
+
+    &lt;androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="96dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" /&gt;
+
+    &lt;com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabInsert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Insert"
+        app:backgroundTint="#E9DDFE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="#5E45B5" /&gt;
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;</code></pre>
+          <div class="explain-grid">
+            <p><code>@+id/recyclerView</code>：MainActivity 用呢個 id 搵 list。</p>
+            <p><code>@+id/fabInsert</code>：MainActivity 用呢粒 button 開 InsertActivity。</p>
+            <p><code>0dp + constraints</code>：代表寬高由 ConstraintLayout 約束決定。</p>
+            <p><code>paddingBottom="96dp"</code>：避免 list 最底被 FAB 遮住。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>9. `activity_insert.xml`：新增資料版面</h3>
+            <button class="copy-button" data-copy-target="full-xml-insert">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/res/layout/activity_insert.xml`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>輸入 name / description，選圖預覽，提供 Cancel / Save。</p>
+          <pre id="full-xml-insert"><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF8FD"
+    android:paddingStart="12dp"
+    android:paddingTop="28dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="28dp"&gt;
+
+    &lt;TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Camera"
+        android:textColor="#3D3D46"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" /&gt;
+
+    &lt;EditText
+        android:id="@+id/etName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#808080"
+        android:hint="Camera Name"
+        android:inputType="textCapWords"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader" /&gt;
+
+    &lt;EditText
+        android:id="@+id/etDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:backgroundTint="#808080"
+        android:gravity="top|start"
+        android:hint="Description (Optional)"
+        android:inputType="textMultiLine"
+        android:minHeight="90dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etName" /&gt;
+
+    &lt;com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="Select Image"
+        android:textAllCaps="false"
+        app:backgroundTint="#6A52BF"
+        app:cornerRadius="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etDescription" /&gt;
+
+    &lt;ImageView
+        android:id="@+id/imageView"
+        android:layout_width="170dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="28dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectImage" /&gt;
+
+    &lt;com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        app:backgroundTint="#6A52BF"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" /&gt;
+
+    &lt;com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:textAllCaps="false"
+        app:backgroundTint="#6A52BF"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" /&gt;
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;</code></pre>
+          <div class="explain-grid">
+            <p><code>etName</code> / <code>etDescription</code>：InsertActivity 讀輸入內容。</p>
+            <p><code>btnSelectImage</code>：開 image picker。</p>
+            <p><code>imageView</code>：選圖後預覽，初始 `gone`。</p>
+            <p><code>btnSave</code>：呼叫 `saveCamera()` 寫入 database。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>10. `activity_details.xml`：詳細頁版面</h3>
+            <button class="copy-button" data-copy-target="full-xml-details">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/res/layout/activity_details.xml`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>顯示選中 camera 嘅圖片、名稱、描述，並有 Back button。</p>
+          <pre id="full-xml-details"><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF8FD"&gt;
+
+    &lt;ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="260dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" /&gt;
+
+    &lt;TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="12dp"
+        android:text="Sony A1ii"
+        android:textColor="#3D3D46"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView" /&gt;
+
+    &lt;TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        android:text="Description: ..."
+        android:textColor="#333333"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" /&gt;
+
+    &lt;com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:text="Back"
+        android:textAllCaps="false"
+        app:backgroundTint="#6A52BF"
+        app:cornerRadius="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDescription" /&gt;
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;</code></pre>
+          <div class="explain-grid">
+            <p><code>imageView</code>：DetailsActivity 用嚟顯示 camera 圖。</p>
+            <p><code>tvTitle</code>：顯示 camera name。</p>
+            <p><code>tvDescription</code>：顯示 description。</p>
+            <p><code>btnBack</code>：按完 `finish()` 返回上一頁。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>11. `item_camera.xml`：RecyclerView 每一行</h3>
+            <button class="copy-button" data-copy-target="full-xml-item">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/res/layout/item_camera.xml`，整個檔案覆蓋。</p>
+          <p><strong>用途：</strong>定義 RecyclerView 入面一行 item，只顯示 camera name。</p>
+          <pre id="full-xml-item"><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="16dp"
+    android:padding="2dp"
+    android:text="Sony A1ii"
+    android:textColor="#111111"
+    android:textSize="20sp" /&gt;</code></pre>
+          <div class="explain-grid">
+            <p><code>@+id/tvName</code>：CameraAdapter 會用呢個 id 放入 `camera.name`。</p>
+            <p><code>match_parent</code>：每一行橫向填滿 RecyclerView。</p>
+            <p><code>android:text</code>：只係 Android Studio preview 用，真正顯示由 Adapter 改。</p>
+            <p><code>textSize="20sp"</code>：令首頁 list 容易睇。</p>
+          </div>
+        </article>
+
+        <article class="snippet-card">
+          <div class="snippet-head">
+            <h3>12. `AndroidManifest.xml`：加兩個 Activity</h3>
+            <button class="copy-button" data-copy-target="full-manifest">Copy</button>
+          </div>
+          <p><strong>貼去邊度：</strong>`app/src/main/AndroidManifest.xml` 的 `<code>&lt;application&gt;</code>` 入面。唔好整多個 `<code>&lt;application&gt;</code>`。</p>
+          <p><strong>用途：</strong>如果 Android Studio 無自動註冊 `InsertActivity` / `DetailsActivity`，app 會開唔到新頁，所以要手動加。</p>
+          <pre id="full-manifest"><code>&lt;activity android:name=".InsertActivity" /&gt;
+&lt;activity android:name=".DetailsActivity" /&gt;</code></pre>
+          <div class="explain-grid">
+            <p><code>.InsertActivity</code>：俾 MainActivity 可以開新增頁。</p>
+            <p><code>.DetailsActivity</code>：俾 MainActivity 可以開詳細頁。</p>
+            <p><code>&lt;application&gt;</code>：呢兩行要放喺 application tag 入面。</p>
+            <p><code>MainActivity</code>：新 project 通常已經自動有，唔好亂刪。</p>
+          </div>
         </article>
       </section>
 
@@ -384,18 +1789,20 @@ btnBack.setOnClickListener {
         <div class="file-grid">
           <a href="./files/mock_test_answer.zip" download>完整答案 ZIP</a>
           <a href="./files/ITP4203_Mock_Test_Answer_and_Explanation.docx" download>Mock 解釋 Word</a>
-          <a href="./files/MOCK_TEST_CHEATSHEET.md" target="_blank" rel="noreferrer">Cheatsheet</a>
-          <a href="./files/mock_test_answer/MainActivity.kt" target="_blank" rel="noreferrer">MainActivity.kt</a>
-          <a href="./files/mock_test_answer/InsertActivity.kt" target="_blank" rel="noreferrer">InsertActivity.kt</a>
-          <a href="./files/mock_test_answer/DetailsActivity.kt" target="_blank" rel="noreferrer">DetailsActivity.kt</a>
-          <a href="./files/mock_test_answer/Camera.kt" target="_blank" rel="noreferrer">Camera.kt</a>
-          <a href="./files/mock_test_answer/CameraDao.kt" target="_blank" rel="noreferrer">CameraDao.kt</a>
-          <a href="./files/mock_test_answer/AppDatabase.kt" target="_blank" rel="noreferrer">AppDatabase.kt</a>
-          <a href="./files/mock_test_answer/CameraAdapter.kt" target="_blank" rel="noreferrer">CameraAdapter.kt</a>
-          <a href="./files/mock_test_answer/activity_main.xml" target="_blank" rel="noreferrer">activity_main.xml</a>
-          <a href="./files/mock_test_answer/activity_insert.xml" target="_blank" rel="noreferrer">activity_insert.xml</a>
-          <a href="./files/mock_test_answer/activity_details.xml" target="_blank" rel="noreferrer">activity_details.xml</a>
-          <a href="./files/mock_test_answer/item_camera.xml" target="_blank" rel="noreferrer">item_camera.xml</a>
+          <a href="./view-file.html?file=./files/MOCK_TEST_CHEATSHEET.md&amp;name=MOCK_TEST_CHEATSHEET.md" target="_blank" rel="noreferrer">Cheatsheet 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/README.md&amp;name=README.md" target="_blank" rel="noreferrer">README 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/MainActivity.kt&amp;name=MainActivity.kt" target="_blank" rel="noreferrer">MainActivity.kt 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/InsertActivity.kt&amp;name=InsertActivity.kt" target="_blank" rel="noreferrer">InsertActivity.kt 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/DetailsActivity.kt&amp;name=DetailsActivity.kt" target="_blank" rel="noreferrer">DetailsActivity.kt 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/Camera.kt&amp;name=Camera.kt" target="_blank" rel="noreferrer">Camera.kt 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/CameraDao.kt&amp;name=CameraDao.kt" target="_blank" rel="noreferrer">CameraDao.kt 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/AppDatabase.kt&amp;name=AppDatabase.kt" target="_blank" rel="noreferrer">AppDatabase.kt 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/CameraAdapter.kt&amp;name=CameraAdapter.kt" target="_blank" rel="noreferrer">CameraAdapter.kt 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/activity_main.xml&amp;name=activity_main.xml" target="_blank" rel="noreferrer">activity_main.xml 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/activity_insert.xml&amp;name=activity_insert.xml" target="_blank" rel="noreferrer">activity_insert.xml 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/activity_details.xml&amp;name=activity_details.xml" target="_blank" rel="noreferrer">activity_details.xml 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/item_camera.xml&amp;name=item_camera.xml" target="_blank" rel="noreferrer">item_camera.xml 可讀版</a>
+          <a href="./view-file.html?file=./files/mock_test_answer/AndroidManifest_snippet.xml&amp;name=AndroidManifest_snippet.xml" target="_blank" rel="noreferrer">Manifest snippet 可讀版</a>
         </div>
       </section>
 
@@ -411,19 +1818,26 @@ btnBack.setOnClickListener {
       </div>
 
       <div class="ai-shell ai-chat-shell">
-        <div class="ai-chat-topbar">
-          <div class="ai-chat-brand">
-            <div class="chat-avatar bot-avatar" aria-hidden="true">
-              <svg viewBox="0 0 24 24" class="chat-icon">
+          <div class="ai-chat-topbar">
+            <div class="ai-chat-brand">
+              <div class="chat-avatar bot-avatar" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="chat-icon">
                 <path d="M12 2 4 6v6c0 5.1 3.4 9.8 8 11 4.6-1.2 8-5.9 8-11V6l-8-4Z" fill="currentColor"/>
               </svg>
             </div>
             <div class="ai-chat-meta">
               <strong>Study Helper</strong>
-              <span>Mock test / Kotlin / Android</span>
+                <span>已內置 mock 變種 / Lab 1-5 / Kotlin 背景</span>
+              </div>
             </div>
+          <div class="ai-chat-controls">
+            <label class="chat-provider-label" for="chatProviderSelect">模型</label>
+            <select id="chatProviderSelect" class="chat-provider-select" aria-label="Choose AI model">
+              <option value="gemini">Google</option>
+              <option value="deepseek">DeepSeek</option>
+            </select>
+            <span id="aiStatus" class="status-pill">未準備</span>
           </div>
-          <span id="aiStatus" class="status-pill">未準備</span>
         </div>
 
         <div id="chatHistory" class="chat-history" aria-live="polite"></div>
@@ -438,6 +1852,7 @@ btnBack.setOnClickListener {
               <button class="prompt-chip" type="button" data-template-key="line_by_line">逐行解釋</button>
               <button class="prompt-chip" type="button" data-template-key="button_meaning">唔明粒掣</button>
               <button class="prompt-chip" type="button" data-template-key="fix_error">幫我改錯</button>
+              <button class="prompt-chip" type="button" data-template-key="room_setup">Room API 設定</button>
               <button class="prompt-chip" type="button" data-template-key="room_answer">Room 最短答案</button>
               <button class="prompt-chip" type="button" data-template-key="recycler_answer">RecyclerView 最短答案</button>
               <button class="prompt-chip" type="button" data-template-key="intent_answer">Intent 跳頁</button>
@@ -445,6 +1860,9 @@ btnBack.setOnClickListener {
               <button class="prompt-chip" type="button" data-template-key="xml_layout">XML 版面</button>
               <button class="prompt-chip" type="button" data-template-key="which_file">應該改邊個檔案</button>
               <button class="prompt-chip" type="button" data-template-key="turn_requirement_into_code">題目變 code</button>
+              <button class="prompt-chip" type="button" data-template-key="variant_answer">Mock 變種答案</button>
+              <button class="prompt-chip" type="button" data-template-key="test_file_step_by_step">Test 檔案步驟</button>
+              <button class="prompt-chip" type="button" data-template-key="source_location">對應邊份 Lab</button>
             </div>
           </div>
 
@@ -456,7 +1874,7 @@ btnBack.setOnClickListener {
               </svg>
             </label>
             <input id="aiFileInput" type="file" multiple hidden />
-            <textarea id="aiQuestion" class="chat-input" rows="1" placeholder="輸入問題，或者加埋文件一齊問。"></textarea>
+            <textarea id="aiQuestion" class="chat-input" rows="1" placeholder="直接貼今日題目 / error / code；AI 已知道 ITP4203 mock 背景。"></textarea>
             <button id="askAiButton" class="icon-button send-button" type="button" aria-label="Send">
               <svg viewBox="0 0 24 24" class="chat-icon">
                 <path d="M3 20 21 12 3 4l3.5 8L3 20Z" fill="currentColor"/>

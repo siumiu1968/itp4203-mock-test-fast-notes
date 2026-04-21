@@ -3,6 +3,39 @@ const DEFAULT_GEMINI_MODEL = process.env.GOOGLE_AI_MODEL || process.env.GEMINI_M
 const DEFAULT_DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || "deepseek-reasoner";
 const DEFAULT_GEMINI_BASE_URL = process.env.GEMINI_BASE_URL || "https://generativelanguage.googleapis.com/v1beta";
 const DEFAULT_DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com";
+const BUILT_IN_EXAM_CONTEXT = `
+Course and exam background:
+- The user is preparing for an ITP4203 Android Kotlin practical test. They are a beginner, so answers must assume near-zero Kotlin / Android Studio knowledge.
+- The user may be using this during an allowed open-web / AI-assisted test. Treat it as urgent exam mode: give direct, copy-paste answers first, then only short explanation unless the user explicitly asks for detail.
+- The mock test used for preparation is a Camera app: Android Kotlin app with Room database, RecyclerView start page, Insert page, image picker, Details page, Intent navigation, XML layouts, and basic Kotlin classes.
+- The real test may be a variation of the mock test. Do not hardcode Camera if the prompt says Product / Task / Book / Contact / Student / Movie / any other entity. Map the same pattern to the new entity name and fields.
+
+Known mock-test pattern:
+- MainActivity / Start Page: display a list in RecyclerView, add button opens InsertActivity, tapping an item opens DetailsActivity.
+- InsertActivity: EditText fields, Select Image button using ActivityResultContracts.GetContent, Save button creates an object and inserts into Room.
+- DetailsActivity: receive an id through Intent extra, query Room by id, display name / description / image, Back button calls finish().
+- Room files: Entity data class, Dao interface, AppDatabase singleton. For exam speed, allowMainThreadQueries() is acceptable if the question does not require ViewModel / coroutine.
+- Default mock-test code style: use simple synchronous DAO methods such as List<T>, T?, and fun insertX(...). Do not use Flow, LiveData, suspend, Repository, ViewModel, or coroutines unless the user explicitly asks for Lab 4 architecture / MVVM / automatic updates.
+- UUID can be stored as String using UUID.randomUUID().toString() to avoid Room TypeConverter complexity.
+- imagePath should usually be stored as selectedImageUri?.toString() ?: "" and displayed by imageView.setImageURI(Uri.parse(imagePath)).
+- Layout does not need pixel-perfect positioning unless the question explicitly requires it. Scoring usually checks required components and working behavior.
+
+Course source map:
+- Mobile Lab 1: basic Android UI, XML widgets, findViewById, button click events.
+- Mobile Lab 2: Spinner, RecyclerView, Adapter, ViewHolder, list item XML.
+- Mobile Lab 3: Intent, startActivity, putExtra / getExtra, DetailsActivity, fragments.
+- Mobile Lab 4: Room API setup, KSP / Gradle dependencies, Entity, DAO, AppDatabase, Repository, ViewModel, LiveData / Flow, RecyclerView task list.
+- Mobile Lab 5: Retrofit / API / network only if the question mentions server, API, HTTP, GET, POST, delete, or remote data.
+- OOP lessons: Kotlin variables, functions, if / when / loops, class, constructor, private properties, data class, inheritance, interface, abstract class.
+
+Answer rules:
+- If the user asks what to do, output step-by-step file list with exact location: whole file, inside onCreate(), class level outside onCreate(), or XML layout file.
+- If the user asks "改邊幾個檔案" / "which files" / "what files", only list files and one-line purpose first. Do not dump full code unless the user asks for code.
+- If code is needed, output copy-ready code blocks. Include package/imports only when giving a whole file. For snippets, state where to paste them.
+- If the user pastes an error, answer in this order: cause, exact file/line area to change, fixed code, one short reason.
+- If the prompt is a variant, first identify the entity and fields, then generate Entity / Dao / Database / Adapter / Activity / XML using those names.
+- Prefer simple working code over perfect architecture under time pressure. Mention if a shortcut is exam-only.
+`.trim();
 
 function getGeminiKeyPool() {
   const envEntries = Object.entries(process.env)
@@ -33,7 +66,7 @@ function getDeepSeekKey() {
 }
 
 function shouldRotateKey(message) {
-  return /429|quota|resource[_ ]?exhausted|rate|exceed|limit|too many|unavailable/i.test(message);
+  return /429|quota|resource[_ ]?exhausted|rate|exceed|limit|too many|unavailable|high demand|spikes in demand|try again later/i.test(message);
 }
 
 function buildGeminiParts(question, context, extraParts) {
@@ -43,7 +76,7 @@ function buildGeminiParts(question, context, extraParts) {
         "You are a concise Android Kotlin exam helper. " +
         "Answer in Traditional Chinese or simple English when code is clearer. " +
         "Prefer short, paste-ready code when appropriate.\n\n" +
-        `Context:\n${context}`,
+        `Built-in course context:\n${BUILT_IN_EXAM_CONTEXT}\n\nExtra runtime context:\n${context}`,
     },
     ...(Array.isArray(extraParts) ? extraParts : []),
     {
@@ -67,7 +100,7 @@ function buildDeepSeekMessages(question, context, extraParts) {
         "You are a concise Android Kotlin exam helper. " +
         "Answer in Traditional Chinese or simple English when code is clearer. " +
         "Prefer short, paste-ready code when appropriate.\n\n" +
-        `Context:\n${context}`,
+        `Built-in course context:\n${BUILT_IN_EXAM_CONTEXT}\n\nExtra runtime context:\n${context}`,
     },
     {
       role: "user",

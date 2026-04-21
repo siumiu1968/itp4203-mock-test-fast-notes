@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>答案檔案檢視器</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .viewer-shell {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .viewer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .viewer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .viewer-file-name {
+      margin: 0;
+      word-break: break-word;
+    }
+
+    .viewer-hint {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .code-viewer {
+      white-space: pre-wrap;
+      overflow-x: auto;
+      min-height: 320px;
+      max-height: none;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .viewer-status {
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 14px;
+      }
+
+      .viewer-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="viewer-shell">
+    <section class="panel">
+      <div class="viewer-top">
+        <div>
+          <p class="eyebrow">ITP4203 Answer File</p>
+          <h1 id="fileName" class="viewer-file-name">Loading...</h1>
+          <p class="viewer-hint">呢頁會將 Kotlin / XML / Markdown 用純文字顯示，避免瀏覽器直接打開時變空白。</p>
+        </div>
+        <div class="viewer-actions">
+          <button id="copyFile" class="button button-primary" type="button">Copy</button>
+          <a id="downloadFile" class="button button-secondary" href="./" download>Download raw</a>
+          <a class="button button-secondary" href="./#local-files">Back</a>
+        </div>
+      </div>
+
+      <pre id="fileContent" class="code-viewer">Loading file...</pre>
+      <p id="viewerStatus" class="viewer-status"></p>
+    </section>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const requestedFile = params.get("file") || "";
+    const displayName = params.get("name") || requestedFile.split("/").pop() || "answer file";
+
+    const fileName = document.getElementById("fileName");
+    const fileContent = document.getElementById("fileContent");
+    const viewerStatus = document.getElementById("viewerStatus");
+    const copyFile = document.getElementById("copyFile");
+    const downloadFile = document.getElementById("downloadFile");
+
+    function setStatus(text) {
+      viewerStatus.textContent = text;
+    }
+
+    function isAllowedPath(path) {
+      return (
+        (path.startsWith("./files/") || path.startsWith("files/")) &&
+        !path.includes("..") &&
+        !path.includes("\\")
+      );
+    }
+
+    async function loadFile() {
+      fileName.textContent = displayName;
+
+      if (!isAllowedPath(requestedFile)) {
+        fileContent.textContent = "Invalid file path.";
+        setStatus("只可以檢視 notes_site/files 入面嘅答案檔案。");
+        return;
+      }
+
+      const fileUrl = new URL(requestedFile, window.location.href);
+      downloadFile.href = fileUrl.href;
+      downloadFile.download = displayName;
+
+      try {
+        const response = await fetch(fileUrl.href);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const text = await response.text();
+        fileContent.textContent = text || "(File is empty)";
+        setStatus(`Loaded ${text.length.toLocaleString()} characters.`);
+      } catch (error) {
+        fileContent.textContent = "Failed to load this file.";
+        setStatus(`Error: ${error.message}`);
+      }
+    }
+
+    copyFile.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(fileContent.textContent);
+        copyFile.textContent = "Copied";
+        setTimeout(() => {
+          copyFile.textContent = "Copy";
+        }, 1200);
+      } catch (error) {
+        copyFile.textContent = "Copy failed";
+        setTimeout(() => {
+          copyFile.textContent = "Copy";
+        }, 1200);
+      }
+    });
+
+    loadFile();
+  </script>
+</body>
+</html>

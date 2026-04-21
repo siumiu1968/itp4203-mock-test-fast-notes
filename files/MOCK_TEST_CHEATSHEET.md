@@ -453,7 +453,7 @@ class DetailsActivity : AppCompatActivity() {
 2. `room-compiler`
 3. `ksp`
 
-如果你已經見過 course material，就直接照 Lab 4 寫。
+如果你已經見過 course material，呢一小節只需要照 `Mobile Lab 4` 的 Room / KSP dependency 寫；UI、RecyclerView、Intent 分別返去睇 Lab 1、Lab 2、Lab 3。
 
 ### 7.2 額外 activity
 

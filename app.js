@@ -20,6 +20,7 @@ const aiBaseUrl = document.getElementById("aiBaseUrl");
 const aiKeyPool = document.getElementById("aiKeyPool");
 const aiDeepSeekKey = document.getElementById("aiDeepSeekKey");
 const aiHiddenModel = document.getElementById("aiHiddenModel");
+const chatProviderSelect = document.getElementById("chatProviderSelect");
 const chatHistory = document.getElementById("chatHistory");
 const promptChips = [...document.querySelectorAll(".prompt-chip")];
 
@@ -42,28 +43,69 @@ const CHAT_HISTORY_STORAGE = "itp4203_hidden_chat_history_v1";
 const MAX_TEXT_CHARS = 120000;
 const MAX_FILE_BYTES = 18 * 1024 * 1024;
 const MAX_CHAT_MESSAGES = 40;
+const BUILT_IN_EXAM_CONTEXT = `
+Course and exam background:
+- The user is preparing for an ITP4203 Android Kotlin practical test. They are a beginner, so answers must assume near-zero Kotlin / Android Studio knowledge.
+- The user may be using this during an allowed open-web / AI-assisted test. Treat it as urgent exam mode: give direct, copy-paste answers first, then only short explanation unless the user explicitly asks for detail.
+- The mock test used for preparation is a Camera app: Android Kotlin app with Room database, RecyclerView start page, Insert page, image picker, Details page, Intent navigation, XML layouts, and basic Kotlin classes.
+- The real test may be a variation of the mock test. Do not hardcode Camera if the prompt says Product / Task / Book / Contact / Student / Movie / any other entity. Map the same pattern to the new entity name and fields.
+
+Known mock-test pattern:
+- MainActivity / Start Page: display a list in RecyclerView, add button opens InsertActivity, tapping an item opens DetailsActivity.
+- InsertActivity: EditText fields, Select Image button using ActivityResultContracts.GetContent, Save button creates an object and inserts into Room.
+- DetailsActivity: receive an id through Intent extra, query Room by id, display name / description / image, Back button calls finish().
+- Room files: Entity data class, Dao interface, AppDatabase singleton. For exam speed, allowMainThreadQueries() is acceptable if the question does not require ViewModel / coroutine.
+- Default mock-test code style: use simple synchronous DAO methods such as List<T>, T?, and fun insertX(...). Do not use Flow, LiveData, suspend, Repository, ViewModel, or coroutines unless the user explicitly asks for Lab 4 architecture / MVVM / automatic updates.
+- UUID can be stored as String using UUID.randomUUID().toString() to avoid Room TypeConverter complexity.
+- imagePath should usually be stored as selectedImageUri?.toString() ?: "" and displayed by imageView.setImageURI(Uri.parse(imagePath)).
+- Layout does not need pixel-perfect positioning unless the question explicitly requires it. Scoring usually checks required components and working behavior.
+
+Course source map:
+- Mobile Lab 1: basic Android UI, XML widgets, findViewById, button click events.
+- Mobile Lab 2: Spinner, RecyclerView, Adapter, ViewHolder, list item XML.
+- Mobile Lab 3: Intent, startActivity, putExtra / getExtra, DetailsActivity, fragments.
+- Mobile Lab 4: Room API setup, KSP / Gradle dependencies, Entity, DAO, AppDatabase, Repository, ViewModel, LiveData / Flow, RecyclerView task list.
+- Mobile Lab 5: Retrofit / API / network only if the question mentions server, API, HTTP, GET, POST, delete, or remote data.
+- OOP lessons: Kotlin variables, functions, if / when / loops, class, constructor, private properties, data class, inheritance, interface, abstract class.
+
+Answer rules:
+- If the user asks what to do, output step-by-step file list with exact location: whole file, inside onCreate(), class level outside onCreate(), or XML layout file.
+- If the user asks "改邊幾個檔案" / "which files" / "what files", only list files and one-line purpose first. Do not dump full code unless the user asks for code.
+- If code is needed, output copy-ready code blocks. Include package/imports only when giving a whole file. For snippets, state where to paste them.
+- If the user pastes an error, answer in this order: cause, exact file/line area to change, fixed code, one short reason.
+- If the prompt is a variant, first identify the entity and fields, then generate Entity / Dao / Database / Adapter / Activity / XML using those names.
+- Prefer simple working code over perfect architecture under time pressure. Mention if a shortcut is exam-only.
+`.trim();
 
 const PROMPT_TEMPLATES = {
   line_by_line:
-    "請你用小學生都明嘅方法解釋下面內容。先講整體用途，再逐行解釋每一行做咩，最後講跑完會有咩效果：\n\n[貼上唔明嘅 code / 題目 / 內容]",
+    "考試急用。請直接輸出答案，優先俾可 copy code。只在必要時用最多 3 句解釋。幫我逐行指出下面 code 每行做咩：\n\n[貼上唔明嘅 code / 題目 / 內容]",
   button_meaning:
-    "我唔明呢個元件 / button / 控件係做咩。請你先講佢用途，再講按咗會發生咩事，再講喺 Android 要喺邊個檔案處理：\n\n[貼上元件名 / code / 題目]",
+    "考試急用。請直接講呢個元件 / button 要寫喺邊個 XML、邊個 Kotlin 檔案處理，然後俾最短可 copy code。唔好長篇解釋：\n\n[貼上元件名 / code / 題目]",
   fix_error:
-    "幫我睇下面錯誤。請直接指出錯喺邊，然後俾我最短可抄答案，最後再用最簡單方法解釋點解：\n\n[貼上 error message / 截圖文字 / code]",
+    "考試急用。請直接指出錯喺邊，然後俾我最短修正 code / 要改嘅行。解釋最多 3 句：\n\n[貼上 error message / 截圖文字 / code]",
+  room_setup:
+    "考試急用。我要喺 Android Studio 加 Room API。請直接列出要改邊幾個檔案，並輸出可 copy 嘅 libs.versions.toml、Project build.gradle.kts、Module build.gradle.kts、dependencies、gradle.properties。解釋最多 3 句：\n\n[貼上我而家嘅 Gradle / error / 題目]",
   room_answer:
-    "請根據我下面貼嘅要求，直接俾我最短版 Room 答案。要包括 Entity、Dao、Database，同埋簡單解釋每個檔案做咩：\n\n[貼上題目 / 要求]",
+    "考試急用。請根據下面要求，直接輸出最短可 copy Room 答案。要包括 Entity、Dao、Database；如果需要先加 imports。解釋最多 3 句：\n\n[貼上題目 / 要求]",
   recycler_answer:
-    "請根據我下面貼嘅要求，直接俾我最短版 RecyclerView 答案。要包括 Adapter、ViewHolder、item layout，同埋點樣喺 Activity set adapter：\n\n[貼上題目 / 要求]",
+    "考試急用。請根據下面要求，直接輸出最短可 copy RecyclerView 答案。要包括 Adapter、ViewHolder、item layout、Activity set adapter。解釋最多 3 句：\n\n[貼上題目 / 要求]",
   intent_answer:
-    "請幫我寫最短版 Intent 跳頁答案。要講清楚邊個頁面 send、邊個頁面 receive、putExtra / getStringExtra 點用：\n\n[貼上題目 / 要求]",
+    "考試急用。請直接輸出最短可 copy Intent 跳頁答案。分 send page 同 receive page，包含 putExtra / getStringExtra / startActivity：\n\n[貼上題目 / 要求]",
   image_picker:
-    "請幫我寫最短版 Select Image / image picker 答案。要包括點開相簿、點顯示預覽、點存 URI：\n\n[貼上題目 / 要求]",
+    "考試急用。請直接輸出最短可 copy Select Image / image picker 答案。要包括開相簿、顯示預覽、儲存 URI：\n\n[貼上題目 / 要求]",
   xml_layout:
-    "請幫我根據下面要求寫最簡單 XML 版面。請直接俾我可以抄嘅 layout code，再解釋每個元件做咩：\n\n[貼上畫面要求 / mock test 文字]",
+    "考試急用。請根據下面要求直接輸出最簡單可 copy XML layout。唔需要靚，只要元件齊、id 清楚、容易接 Kotlin：\n\n[貼上畫面要求 / mock test 文字]",
   which_file:
-    "我而家唔知應該改邊個檔案。請你睇我下面貼嘅要求 / code，直接講應該改咩檔案、每個檔案負責乜：\n\n[貼上題目 / code / error]",
+    "考試急用。我唔知要改邊個檔案。請直接列檔案名，逐個講要貼咩 code。解釋最多 3 句：\n\n[貼上題目 / code / error]",
   turn_requirement_into_code:
-    "請你將下面題目直接拆成可抄答案。先列要整嘅檔案，再俾最短 code，最後講每部分對應題目邊句要求：\n\n[貼上題目全文]",
+    "考試急用。請將下面題目直接變成可 copy 答案。先列檔案名，再直接輸出最短 code。唔好長篇教學：\n\n[貼上題目全文]",
+  variant_answer:
+    "考試急用。下面題目可能同 mock test 唔完全一樣。請先判斷 Entity 名同欄位，然後直接改成可 copy 答案。要列清楚每段 code 貼去邊個檔案、貼喺邊個位置：\n\n[貼上今日題目 / 要求]",
+  test_file_step_by_step:
+    "考試急用。我會上載今日 Test 題目檔案。請先完整讀題，然後 Step-by-Step 俾我答案，包括 Android Studio 要點樣操作、要開邊個檔案、每個檔案貼咩 code、每段 code 貼喺邊個位置。請用呢個格式回答：\n\n1. 先判斷題目要做咩 app、Entity 名、欄位、頁面、功能。\n2. 列出要建立 / 修改嘅檔案清單，逐個講用途。\n3. 由 Android Studio 操作開始教：New Project / Sync Gradle / 建 Kotlin file / 建 XML / 加 Activity / Run app。\n4. 每一步都先講「喺 Android Studio 做咩」，再俾可 copy code。\n5. 每一步最後加一行「下一步：...」，直接話我做完呢步之後要做咩。\n6. 如果題目同 mock test 唔同，請即刻把 Camera / Task 改成題目真正要求嘅名稱同欄位。\n7. 唔好長篇解釋，優先俾可 copy 答案同考試可即做嘅步驟。\n\n[我已上載 Test 題目檔案，請根據附件回答]",
+  source_location:
+    "考試急用。請話我知呢個要求對應返邊份 Lab / PowerPoint / 官方網站概念，然後直接俾最短可 copy 做法。唔好長篇解釋：\n\n[貼上題目句子 / 唔明嘅位]",
 };
 
 const BOT_AVATAR = `
@@ -143,12 +185,19 @@ function getStoredKeyPool() {
 }
 
 function getStoredProvider() {
-  const provider = (window.localStorage.getItem(AI_PROVIDER_STORAGE) || DEFAULT_PROVIDER).trim().toLowerCase();
-  return provider === "deepseek" ? "deepseek" : "gemini";
+  return normalizeProvider(window.localStorage.getItem(AI_PROVIDER_STORAGE) || DEFAULT_PROVIDER);
+}
+
+function normalizeProvider(provider) {
+  return String(provider || "").trim().toLowerCase() === "deepseek" ? "deepseek" : "gemini";
 }
 
 function getDefaultBaseUrl(provider) {
   return provider === "deepseek" ? DEFAULT_DEEPSEEK_BASE_URL : DEFAULT_GEMINI_BASE_URL;
+}
+
+function getDefaultModel(provider) {
+  return provider === "deepseek" ? "deepseek-reasoner" : DEFAULT_MODEL;
 }
 
 function getStoredBaseUrl(provider = getStoredProvider()) {
@@ -159,8 +208,8 @@ function getStoredDeepSeekKey() {
   return (window.localStorage.getItem(AI_DEEPSEEK_KEY_STORAGE) || "").trim();
 }
 
-function getStoredModel() {
-  return (window.localStorage.getItem(AI_MODEL_STORAGE) || DEFAULT_MODEL).trim() || DEFAULT_MODEL;
+function getStoredModel(provider = getStoredProvider()) {
+  return (window.localStorage.getItem(AI_MODEL_STORAGE) || getDefaultModel(provider)).trim() || getDefaultModel(provider);
 }
 
 function getActiveKeyIndex(poolLength) {
@@ -172,7 +221,7 @@ function getActiveKeyIndex(poolLength) {
 }
 
 function saveConfig() {
-  const selectedProvider = aiProvider?.value === "deepseek" ? "deepseek" : "gemini";
+  const selectedProvider = normalizeProvider(aiProvider?.value || chatProviderSelect?.value);
 
   window.localStorage.setItem(AI_PROVIDER_STORAGE, selectedProvider);
 
@@ -200,20 +249,19 @@ function saveConfig() {
   }
 
   if (aiHiddenModel) {
-    const value = aiHiddenModel.value.trim() || DEFAULT_MODEL;
+    const value = aiHiddenModel.value.trim() || getDefaultModel(selectedProvider);
     window.localStorage.setItem(AI_MODEL_STORAGE, value);
   }
 
   window.localStorage.setItem(AI_ACTIVE_KEY_INDEX_STORAGE, "0");
+  syncProviderControls(selectedProvider);
   pingAi();
 }
 
 function loadConfig() {
   const provider = getStoredProvider();
 
-  if (aiProvider) {
-    aiProvider.value = provider;
-  }
+  syncProviderControls(provider);
 
   if (aiBaseUrl) {
     aiBaseUrl.value = getStoredBaseUrl(provider);
@@ -228,28 +276,59 @@ function loadConfig() {
   }
 
   if (aiHiddenModel) {
-    aiHiddenModel.value = getStoredModel();
+    aiHiddenModel.value = getStoredModel(provider);
   }
 }
 
 function shouldRotateKey(message) {
-  return /429|quota|resource[_ ]?exhausted|rate|exceed|limit|too many|unavailable/i.test(message);
+  return /429|quota|resource[_ ]?exhausted|rate|exceed|limit|too many|unavailable|high demand|spikes in demand|try again later/i.test(message);
 }
 
 function applyProviderDefaults(provider) {
+  const selectedProvider = normalizeProvider(provider);
+
   if (aiBaseUrl) {
     const current = aiBaseUrl.value.trim();
     if (!current || current === DEFAULT_GEMINI_BASE_URL || current === DEFAULT_DEEPSEEK_BASE_URL) {
-      aiBaseUrl.value = getDefaultBaseUrl(provider);
+      aiBaseUrl.value = getDefaultBaseUrl(selectedProvider);
     }
   }
 
   if (aiHiddenModel) {
     const currentModel = aiHiddenModel.value.trim();
     if (!currentModel || currentModel === "gemini-2.5-flash" || currentModel === "deepseek-reasoner") {
-      aiHiddenModel.value = provider === "deepseek" ? "deepseek-reasoner" : "gemini-2.5-flash";
+      aiHiddenModel.value = getDefaultModel(selectedProvider);
     }
   }
+}
+
+function syncProviderControls(provider) {
+  const selectedProvider = normalizeProvider(provider);
+  if (aiProvider) {
+    aiProvider.value = selectedProvider;
+  }
+  if (chatProviderSelect) {
+    chatProviderSelect.value = selectedProvider;
+  }
+}
+
+function switchProvider(provider) {
+  const selectedProvider = normalizeProvider(provider);
+  window.localStorage.setItem(AI_PROVIDER_STORAGE, selectedProvider);
+
+  const currentBase = window.localStorage.getItem(AI_BASE_URL_STORAGE) || "";
+  if (!currentBase || currentBase === DEFAULT_GEMINI_BASE_URL || currentBase === DEFAULT_DEEPSEEK_BASE_URL) {
+    window.localStorage.setItem(AI_BASE_URL_STORAGE, getDefaultBaseUrl(selectedProvider));
+  }
+
+  const currentModel = window.localStorage.getItem(AI_MODEL_STORAGE) || "";
+  if (!currentModel || currentModel === "gemini-2.5-flash" || currentModel === "deepseek-reasoner") {
+    window.localStorage.setItem(AI_MODEL_STORAGE, getDefaultModel(selectedProvider));
+  }
+
+  syncProviderControls(selectedProvider);
+  loadConfig();
+  pingAi();
 }
 
 function escapeHtml(value) {
@@ -619,7 +698,7 @@ function buildUserParts(question, context, fileParts) {
         "You are a concise Android Kotlin exam helper. " +
         "Answer in Traditional Chinese or simple English when code is clearer. " +
         "Prefer short, paste-ready code when appropriate.\n\n" +
-        `Context:\n${context}`,
+        `Built-in course context:\n${BUILT_IN_EXAM_CONTEXT}\n\nExtra runtime context:\n${context}`,
     },
     ...fileParts,
     {
@@ -689,7 +768,7 @@ function buildDeepSeekMessages(question, context, fileParts) {
         "You are a concise Android Kotlin exam helper. " +
         "Answer in Traditional Chinese or simple English when code is clearer. " +
         "Prefer short, paste-ready code when appropriate.\n\n" +
-        `Context:\n${context}`,
+        `Built-in course context:\n${BUILT_IN_EXAM_CONTEXT}\n\nExtra runtime context:\n${context}`,
     },
     {
       role: "user",
@@ -843,7 +922,7 @@ async function handleAsk() {
   const files = [...(aiFileInput?.files || [])];
   const attachmentNames = files.map((file) => file.name);
   const context =
-    "You are answering questions about an Android Kotlin mock test with Room, RecyclerView, Intent, Image picker, XML layouts, and beginner-level Kotlin explanations. Keep answers concise, clear, and paste-ready.";
+    "Current page context: the user is likely inside the public ITP4203 notes website and may paste a new practical-test requirement, an Android Studio error, XML/Kotlin code, or a screenshot/file. Assume they need the fastest safe answer for the current Android Kotlin task.";
 
   if (!question) {
     pushMessage("assistant", "請先輸入問題。");
@@ -980,7 +1059,13 @@ if (aiFileInput) {
 
 if (aiProvider) {
   aiProvider.addEventListener("change", () => {
-    applyProviderDefaults(aiProvider.value === "deepseek" ? "deepseek" : "gemini");
+    applyProviderDefaults(aiProvider.value);
+  });
+}
+
+if (chatProviderSelect) {
+  chatProviderSelect.addEventListener("change", () => {
+    switchProvider(chatProviderSelect.value);
   });
 }
 
